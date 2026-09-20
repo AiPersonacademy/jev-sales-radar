@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEV SALES RADAR // ULTRA-FAST LIVE TELEPROMPTER</title>
+    <title>JEV SALES RADAR // REAL-TIME LIVE TRANSCRIBING</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,23 +11,23 @@
 
     <style>
         :root {
-            --bg: #090B10;
-            --surface: #11141D;
-            --surface-elevated: #181C28;
+            --bg: #080A0F;
+            --surface: #10131C;
+            --surface-elevated: #161A26;
             --surface-input: #0A0D14;
-            --border: #232938;
-            --border-highlight: #3B445B;
+            --border: #222838;
+            --border-highlight: #3A445C;
             
             --accent-orange: #FF5A1F;
             --accent-orange-dim: rgba(255, 90, 31, 0.12);
             --accent-cyan: #06B6D4;
             --accent-cyan-dim: rgba(6, 182, 212, 0.12);
             --hazard-red: #F43F5E;
-            --hazard-red-dim: rgba(244, 63, 94, 0.14);
+            --hazard-red-dim: rgba(244, 63, 94, 0.16);
             --terminal-green: #10B981;
-            --terminal-green-dim: rgba(16, 185, 129, 0.14);
+            --terminal-green-dim: rgba(16, 185, 129, 0.16);
             --amber: #F59E0B;
-            --amber-dim: rgba(245, 158, 11, 0.12);
+            --amber-dim: rgba(245, 158, 11, 0.14);
             
             --text-high: #F8FAFC;
             --text-mid: #94A3B8;
@@ -67,7 +67,7 @@
             z-index: 2;
             max-width: 1440px;
             margin: 0 auto;
-            padding: 20px 24px;
+            padding: 18px 24px;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
@@ -81,7 +81,7 @@
             background: var(--surface);
             border: 1px solid var(--border);
             padding: 12px 20px;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
         .brand {
             display: flex;
@@ -155,8 +155,8 @@
         .hero-action-deck {
             background: var(--surface);
             border: 1px solid var(--border);
-            padding: 24px;
-            margin-bottom: 20px;
+            padding: 22px 24px;
+            margin-bottom: 18px;
             position: relative;
         }
         .hero-action-deck-title {
@@ -166,7 +166,7 @@
             text-transform: uppercase;
             letter-spacing: 0.08em;
             color: var(--text-dim);
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -175,19 +175,19 @@
         .two-buttons-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 18px;
         }
 
         .hero-talk-btn {
             background: var(--surface-elevated);
             border: 2px solid var(--border);
-            padding: 28px 24px;
+            padding: 24px 20px;
             cursor: pointer;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             text-align: center;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
@@ -198,18 +198,18 @@
             border-color: var(--border-highlight);
         }
         .hero-talk-btn .icon {
-            font-size: 38px;
-            margin-bottom: 4px;
+            font-size: 34px;
+            margin-bottom: 2px;
         }
         .hero-talk-btn .btn-title {
             font-family: var(--font-display);
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 800;
             letter-spacing: 0.05em;
             text-transform: uppercase;
         }
         .hero-talk-btn .btn-sub {
-            font-size: 12px;
+            font-size: 11px;
             color: var(--text-mid);
             max-width: 420px;
             line-height: 1.4;
@@ -239,7 +239,7 @@
         .btn-client.active {
             background: rgba(244, 63, 94, 0.14);
             border-color: var(--hazard-red);
-            box-shadow: 0 0 30px rgba(244, 63, 94, 0.3);
+            box-shadow: 0 0 30px rgba(244, 63, 94, 0.35);
         }
         .btn-client.active .live-pill {
             background: var(--hazard-red);
@@ -262,7 +262,7 @@
         .btn-sales.active {
             background: rgba(16, 185, 129, 0.14);
             border-color: var(--terminal-green);
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.35);
         }
         .btn-sales.active .live-pill {
             background: var(--terminal-green);
@@ -281,6 +281,90 @@
             100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
         }
 
+        /* REAL-TIME LIVE TRANSCRIBING HUD */
+        .live-streamed-talking-hud {
+            margin-top: 16px;
+            background: #0D1017;
+            border: 1px solid var(--border-highlight);
+            padding: 16px 20px;
+            position: relative;
+        }
+        .stream-header-strip {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .stream-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .live-blink-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--terminal-green);
+            animation: blink-live 1.2s infinite;
+        }
+        @keyframes blink-live {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* AUDIO FREQUENCY WAVE BARS */
+        .audio-wave-visualizer {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            height: 18px;
+        }
+        .v-bar {
+            width: 3px;
+            height: 4px;
+            background: var(--border-highlight);
+            border-radius: 1px;
+            transition: height 0.08s ease;
+        }
+        .active-red .v-bar { background: var(--hazard-red); }
+        .active-green .v-bar { background: var(--terminal-green); }
+
+        .stream-text-display {
+            font-family: var(--font-mono);
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 1.5;
+            color: #FFFFFF;
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            word-break: break-word;
+        }
+        .stream-quote-mark {
+            color: var(--accent-orange);
+            font-size: 22px;
+            font-weight: 800;
+            margin-right: 6px;
+        }
+        .cursor-block {
+            display: inline-block;
+            color: var(--accent-orange);
+            animation: cursor-blink 0.8s infinite;
+            margin-left: 4px;
+            font-weight: 800;
+        }
+        @keyframes cursor-blink {
+            0%, 49% { opacity: 1; }
+            50%, 100% { opacity: 0; }
+        }
+
         /* TALK-TO-LISTEN BALANCE TRACKER */
         .pacing-meter {
             display: flex;
@@ -288,8 +372,8 @@
             gap: 14px;
             font-size: 11px;
             color: var(--text-dim);
-            margin-top: 18px;
-            padding-top: 14px;
+            margin-top: 14px;
+            padding-top: 12px;
             border-top: 1px solid var(--border);
         }
         .pacing-bar-track {
@@ -303,49 +387,28 @@
         .pacing-fill-client {
             height: 100%;
             background: var(--hazard-red);
-            width: 65%;
+            width: 50%;
             transition: width 0.3s ease;
         }
         .pacing-fill-sales {
             height: 100%;
             background: var(--terminal-green);
-            width: 35%;
+            width: 50%;
             transition: width 0.3s ease;
         }
 
-        /* QUICK TEST DRAWER (DISCREET KEY SHORTCUTS // NO CLUTTER) */
-        .quick-test-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 12px;
-            font-size: 10px;
-            color: var(--text-dim);
-        }
-        .shortcut-pill {
-            cursor: pointer;
-            color: var(--text-mid);
-            padding: 2px 6px;
-            border: 1px solid var(--border);
-            transition: all 0.12s ease;
-        }
-        .shortcut-pill:hover {
-            border-color: var(--accent-orange);
-            color: var(--text-high);
-        }
-
-        /* MAIN TELEPROMPTER HUD DISPLAY */
+        /* MAIN TELEPROMPTER HUD DISPLAY (NO DEMO TEXT // CLEAN LIVE STANDBY) */
         .hud-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            gap: 18px;
             flex-grow: 1;
         }
 
         .hud-card {
             background: var(--surface);
             border: 1px solid var(--border);
-            padding: 22px 26px;
+            padding: 22px 24px;
             display: flex;
             flex-direction: column;
             position: relative;
@@ -378,9 +441,9 @@
         /* CARD 1: STATE OF BEING & SUBTEXT */
         .state-badge {
             display: inline-block;
-            background: var(--amber-dim);
-            color: var(--amber);
-            border: 1px solid rgba(245, 158, 11, 0.4);
+            background: var(--surface-elevated);
+            color: var(--text-mid);
+            border: 1px solid var(--border);
             padding: 5px 12px;
             font-size: 11px;
             font-weight: 800;
@@ -391,9 +454,9 @@
         .subtext-quote {
             font-size: 15px;
             line-height: 1.55;
-            color: var(--text-high);
+            color: var(--text-dim);
             background: var(--surface-elevated);
-            border-left: 3px solid var(--amber);
+            border-left: 3px solid var(--border-highlight);
             padding: 14px 18px;
             font-style: italic;
             margin-bottom: 12px;
@@ -406,9 +469,9 @@
         /* CARD 2: JEV FAST-FORWARD PREDICTION */
         .prediction-badge {
             display: inline-block;
-            background: var(--accent-cyan-dim);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(6, 182, 212, 0.4);
+            background: var(--surface-elevated);
+            color: var(--text-mid);
+            border: 1px solid var(--border);
             padding: 5px 12px;
             font-size: 11px;
             font-weight: 800;
@@ -419,9 +482,9 @@
         .prediction-quote {
             font-size: 15px;
             line-height: 1.55;
-            color: #A5F3FC;
+            color: var(--text-dim);
             background: var(--surface-elevated);
-            border-left: 3px solid var(--accent-cyan);
+            border-left: 3px solid var(--border-highlight);
             padding: 14px 18px;
             margin-bottom: 12px;
         }
@@ -430,18 +493,25 @@
         .hud-hero-script {
             grid-column: span 2;
             background: #131722;
-            border: 2px solid var(--accent-orange);
-            box-shadow: 0 0 35px rgba(255, 90, 31, 0.1);
-            padding: 26px 30px;
+            border: 2px solid var(--border);
+            padding: 24px 28px;
+            transition: border-color 0.3s ease;
+        }
+        .hud-hero-script.active-prompt {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 35px rgba(255, 90, 31, 0.15);
         }
         .teleprompter-script-text {
             font-family: var(--font-display);
-            font-size: 22px;
+            font-size: 21px;
             font-weight: 700;
             line-height: 1.5;
-            color: #FFFFFF;
+            color: var(--text-dim);
             letter-spacing: 0.01em;
             margin-bottom: 18px;
+        }
+        .teleprompter-script-text.live-loaded {
+            color: #FFFFFF;
         }
         .script-controls-bar {
             display: flex;
@@ -485,16 +555,23 @@
         }
         .cadence-text {
             font-size: 13px;
-            color: var(--text-high);
+            color: var(--text-dim);
             font-weight: 600;
         }
         .followup-box {
             background: var(--surface-elevated);
-            border-left: 3px solid var(--terminal-green);
+            border-left: 3px solid var(--border-highlight);
             padding: 14px 18px;
             font-size: 13px;
-            color: #A7F3D0;
+            color: var(--text-dim);
             margin-top: 10px;
+        }
+
+        /* CARD 5: PSYCHOLOGY MECHANISM */
+        .mechanism-text {
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-dim);
         }
 
         /* FOOTER TELEMETRY */
@@ -509,7 +586,7 @@
             border-top: 1px solid var(--border);
         }
 
-        /* MODAL (API KEY SETTINGS) */
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -574,12 +651,12 @@
         <div class="brand">
             <span class="badge">⚡ JEV</span>
             <span>SALES RADAR</span>
-            <span class="tagline">// REAL-TIME STREAMING TELEPROMPTER</span>
+            <span class="tagline">// REAL-TIME LIVE TRANSCRIBING</span>
         </div>
         <div class="telemetry-status">
-            <span class="badge-live"><span class="pulse-dot"></span> <span id="radarLatencyBadge">STREAMING ASR: ACTIVE</span></span>
-            <span style="color: var(--text-dim); font-size: 11px;" id="engineBadge">ENGINE: DEEPGRAM / SIMD-RAG (1ms)</span>
-            <button class="btn-ghost" onclick="toggleApiKeyModal()">[ ⚙️ STREAMING ENGINE & KEYS ]</button>
+            <span class="badge-live"><span class="pulse-dot"></span> <span id="radarLatencyBadge">WHISPER LIVE ASR: READY</span></span>
+            <span style="color: var(--text-dim); font-size: 11px;" id="asrSourceBadge">ASR: LOCAL WHISPER (CPU int8)</span>
+            <button class="btn-ghost" onclick="toggleApiKeyModal()">[ ⚙️ SETTINGS ]</button>
         </div>
     </header>
 
@@ -587,7 +664,7 @@
     <section class="hero-action-deck">
         <div class="hero-action-deck-title">
             <span>// TWO-WAY LIVE VOICE CHANNEL</span>
-            <span id="activeChannelStatus" style="color: var(--terminal-green); font-weight: 800;">READY // AWAITING VOICE INPUT</span>
+            <span id="activeChannelStatus" style="color: var(--terminal-green); font-weight: 800;">READY // PRESS A BUTTON AND SPEAK</span>
         </div>
 
         <div class="two-buttons-grid">
@@ -595,44 +672,54 @@
             <div class="hero-talk-btn btn-client" id="btnClient" onclick="toggleClientMic()">
                 <div class="icon">🗣️</div>
                 <div class="btn-title">CLIENT TALKING</div>
-                <div class="btn-sub">Click when prospect speaks. Instant streaming transcription diagnoses subconscious state of being and updates teleprompter in &lt;1ms.</div>
-                <span class="live-pill" id="clientPill">CLICK TO TALK</span>
+                <div class="btn-sub">Click to start live microphone transcribing. Words transcribe live with local Whisper and update the closing teleprompter in &lt;1ms.</div>
+                <span class="live-pill" id="clientPill">CLICK TO TRANSCRIBE</span>
             </div>
 
             <!-- BUTTON 2: SALESPERSON TALKING -->
             <div class="hero-talk-btn btn-sales" id="btnSales" onclick="toggleSalesMic()">
                 <div class="icon">🎧</div>
                 <div class="btn-title">SALESPERSON TALKING</div>
-                <div class="btn-sub">Click when you speak. Real-time cadence coach monitors talk time, prevents monologues, and tracks close readiness.</div>
-                <span class="live-pill" id="salesPill">CLICK TO TALK</span>
+                <div class="btn-sub">Click when you speak. Live transcribing tracks speech pace, monitors talk-to-listen balance, and coaches cadence.</div>
+                <span class="live-pill" id="salesPill">CLICK TO TRANSCRIBE</span>
             </div>
         </div>
 
-        <!-- TALK-TO-LISTEN BALANCE (NO TEXT INPUT CLUTTER) -->
+        <!-- REAL-TIME LIVE TRANSCRIBING TICKER (NO FAKE DEMOS // ACTUAL MIC TRANSCRIBED WORDS APPEAR HERE) -->
+        <div class="live-streamed-talking-hud" id="liveStreamedHud">
+            <div class="stream-header-strip">
+                <div class="stream-indicator">
+                    <span class="live-blink-dot" id="streamBlinkDot"></span>
+                    <span id="streamSpeakerBadge" style="color: var(--text-dim);">LIVE AUDIO FEED:</span>
+                </div>
+                <div class="audio-wave-visualizer" id="waveVisualizer">
+                    <div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div>
+                    <div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div>
+                    <div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div><div class="v-bar"></div>
+                </div>
+                <div class="stream-telemetry" style="color: var(--text-dim); font-size: 10px;" id="streamSpeedBadge">
+                    STATUS: READY // MICROPHONE ACTIVE
+                </div>
+            </div>
+            <div class="stream-text-display">
+                <span class="stream-quote-mark">“</span>
+                <span id="streamingWordsText" style="color: var(--text-mid);">Speak into your microphone... live transcribed words will appear here continuously in real time.</span>
+                <span class="cursor-block">▌</span>
+            </div>
+        </div>
+
+        <!-- TALK-TO-LISTEN BALANCE -->
         <div class="pacing-meter">
-            <span>CLIENT LISTEN: <strong id="clientPercent">65%</strong></span>
+            <span>CLIENT LISTEN: <strong id="clientPercent">50%</strong></span>
             <div class="pacing-bar-track">
-                <div class="pacing-fill-client" id="barClient" style="width: 65%;"></div>
-                <div class="pacing-fill-sales" id="barSales" style="width: 35%;"></div>
+                <div class="pacing-fill-client" id="barClient" style="width: 50%;"></div>
+                <div class="pacing-fill-sales" id="barSales" style="width: 50%;"></div>
             </div>
-            <span>REP TALK: <strong id="salesPercent">35%</strong> (TARGET: &lt; 40%)</span>
-        </div>
-
-        <!-- DISCREET QUICK TEST SHORTCUTS -->
-        <div class="quick-test-bar">
-            <span>FAST SIMULATE:</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('That price is way too high for us right now')">[1] Price Too High</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('What is your money back guarantee if this flops?')">[2] Guarantee & Refund</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('Can you show me reviews or case studies of someone like me?')">[3] Reviews & Proof</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('Let me think about it and circle back next week')">[4] Think About It</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('I need to talk to my partner and check with my boss first')">[5] Partner / Boss</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('This sounds too good to be true, what is the catch?')">[6] Skepticism</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('We can do this ourselves with internal tools')">[7] DIY In-House</span>
-            <span class="shortcut-pill" onclick="quickAnalyze('I do not have time or bandwidth right now')">[8] No Bandwidth</span>
+            <span>REP TALK: <strong id="salesPercent">50%</strong> (TARGET: &lt; 40%)</span>
         </div>
     </section>
 
-    <!-- MAIN TELEPROMPTER HUD -->
+    <!-- MAIN TELEPROMPTER HUD (NO FAKE DEMO DATA // ZERO FAKE CARDS) -->
     <main class="hud-grid">
         <!-- ZONE 1: STATE OF BEING & SUBTEXT -->
         <div class="hud-card">
@@ -640,16 +727,16 @@
                 <div class="hud-card-title">
                     <span>🧠 PROSPECT STATE OF BEING</span>
                 </div>
-                <span class="hud-card-tag" style="background: var(--amber-dim); color: var(--amber);" id="categoryTag">PRICE_AND_BUDGET</span>
+                <span class="hud-card-tag" style="background: var(--surface-elevated); color: var(--text-dim);" id="categoryTag">STANDBY</span>
             </div>
             <div class="state-badge" id="stateOfBeingBadge">
-                FINANCIAL SELF-PRESERVATION & FEAR OF BUYER'S REMORSE
+                AWAITING LIVE PROSPECT VOICE
             </div>
             <div class="subtext-quote" id="unspokenSubtextText">
-                "I want the promised result, but I'm terrified of making an expensive mistake or overpaying. I need to be 100% sure this pays for itself before risking my capital."
+                "Start speaking into your microphone. JEV will live-transcribe your speech and diagnose subconscious state of being..."
             </div>
             <div class="subtext-hint">
-                💡 Subconscious truth: They are defending against perceived financial regret, not disputing your product's merit.
+                💡 Subconscious truth will diagnose automatically as live speech is captured.
             </div>
         </div>
 
@@ -659,37 +746,37 @@
                 <div class="hud-card-title">
                     <span>🔮 JEV FAST-FORWARD PREDICTION</span>
                 </div>
-                <span class="hud-card-tag" style="background: var(--accent-cyan-dim); color: var(--accent-cyan);" id="predictConfidenceTag">CONFIDENCE: 96%</span>
+                <span class="hud-card-tag" style="background: var(--surface-elevated); color: var(--text-dim);" id="predictConfidenceTag">READY</span>
             </div>
             <div class="prediction-badge">
                 ANTICIPATED NEXT SENTENCE
             </div>
             <div class="prediction-quote" id="predictionNextSayText">
-                "They are about to say: 'Can you do it for less, or maybe we can start with something smaller?' or 'We'll have to wait until next quarter.'"
+                "Anticipated trajectory will generate as soon as live speech is detected..."
             </div>
             <div class="subtext-hint">
                 ⚡ Tactical Advantage: Speak the counter-script before they can lock themselves into an exit stance.
             </div>
         </div>
 
-        <!-- ZONE 3: HERO TELEPROMPTER SCRIPT (FULL WIDTH) -->
-        <div class="hud-card hud-hero-script">
-            <div class="hud-card-header" style="border-bottom-color: rgba(255, 90, 31, 0.3);">
+        <!-- ZONE 3: HERO CLOSING SCRIPT -->
+        <div class="hud-card hud-hero-script" id="heroScriptCard">
+            <div class="hud-card-header">
                 <div class="hud-card-title" style="color: var(--accent-orange);">
                     <span>🎯 TELEPROMPTER // EXACT SCRIPT TO CLOSE THEM NOW</span>
                 </div>
-                <span class="hud-card-tag" style="background: var(--accent-orange); color: #000; font-weight: 800;" id="bookCitationBadge">
-                    CHRIS VOSS & ALEX HORMOZI // NEVER SPLIT THE DIFFERENCE
+                <span class="hud-card-tag" style="background: var(--surface-elevated); color: var(--text-dim);" id="bookCitationBadge">
+                    SALES PSYCHOLOGY RAG // STANDBY
                 </span>
             </div>
             
             <div class="teleprompter-script-text" id="teleprompterScript">
-                "It feels like a big number right now because you're looking at this as a raw expense rather than an asset that pays for itself. If you knew with 100% certainty that this completely solved your problem, would the price still hold you back?"
+                "Live teleprompter script will appear here the moment your prospect begins speaking."
             </div>
 
             <div class="script-controls-bar">
                 <button class="btn-action-primary" onclick="speakTeleprompterScript()">
-                    <span>🔊 HEAR FM DJ VOICE CADENCE</span>
+                    <span>🔊 HEAR VOCAL CADENCE</span>
                 </button>
                 <button class="btn-ghost" onclick="copyScriptToClipboard()">
                     [ 📋 COPY SCRIPT ]
@@ -703,19 +790,19 @@
                 <div class="hud-card-title">
                     <span>🎙️ VOCAL CADENCE & INFLECTION GUIDE</span>
                 </div>
-                <span class="hud-card-tag" style="background: var(--terminal-green-dim); color: var(--terminal-green);">DELIVERY RULES</span>
+                <span class="hud-card-tag" style="background: var(--surface-elevated); color: var(--text-dim);">DELIVERY RULES</span>
             </div>
             <div class="cadence-row">
                 <span class="cadence-icon">📻</span>
                 <div class="cadence-text" id="deliveryToneText">
-                    Late-night FM DJ voice: calm, slow cadence, downward inflection at sentence end. Completely devoid of defensiveness.
+                    Awaiting live voice cadence...
                 </div>
             </div>
             <div class="subtext-hint" style="margin-top: 10px;">
                 ♟️ SECONDARY LOCK-IN FOLLOWUP:
             </div>
             <div class="followup-box" id="secondaryFollowupText">
-                "What is it currently costing you every month in lost time and missed results by staying where you are right now?"
+                "Followup commitment strategy will generate here..."
             </div>
         </div>
 
@@ -725,64 +812,67 @@
                 <div class="hud-card-title">
                     <span>📚 PSYCHOLOGY MECHANISM</span>
                 </div>
-                <span class="hud-card-tag" style="background: var(--surface-elevated); color: var(--text-mid);" id="frameworkTag">TACTICAL EMPATHY</span>
+                <span class="hud-card-tag" style="background: var(--surface-elevated); color: var(--text-dim);" id="frameworkTag">AWAITING INPUT</span>
             </div>
-            <div style="font-size: 13px; line-height: 1.6; color: var(--text-high);" id="psychologicalPrincipleText">
-                Disarms defensive amygdala activation by vocalizing their fear of waste, then transforms an 'expense' into an inevitable return on investment.
+            <div class="mechanism-text" id="psychologicalPrincipleText">
+                Awaiting live speech input to match to sales psychology battlecards.
             </div>
-            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-dim);" id="decisionDetails">
-                Gateway Decision: Evaluated 12 discrete objection criteria in &lt;1ms.
+            <div style="margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); font-size: 11px; color: var(--text-dim);" id="telemetryFooterNote">
+                Gateway Engine: Ready to evaluate discrete criteria in &lt;1ms.
             </div>
         </div>
     </main>
 
     <!-- FOOTER TELEMETRY -->
     <footer class="footer-telemetry">
-        <div>⚡ JEV SYSTEM ONE DECISION ENGINE // ULTRA-LOW LATENCY STREAMING</div>
-        <div id="telemetryFooter">ASR: REAL-TIME STREAMING | JEV DECISION: 1ms | 100% UNCLUTTERED COCKPIT</div>
+        <div>⚡ JEV SYSTEM ONE DECISION ENGINE // REAL-TIME LIVE TRANSCRIBING</div>
+        <div id="telemetryFooter">ASR: LOCAL WHISPER + BROWSER | RADAR: 1ms | 0 DEMO DATA</div>
     </footer>
 </div>
 
 <!-- API KEY & STREAMING ENGINE MODAL -->
 <div class="modal-overlay" id="apiKeyModal">
     <div class="modal-box">
-        <div class="modal-title">STREAMING TRANSCRIPTION & ENGINE SETTINGS</div>
+        <div class="modal-title">SETTINGS & CLOUD GATEWAY</div>
         
-        <label class="modal-label">DEEPGRAM NOVA-2 API KEY (Fastest Streaming Speech-to-Text &lt;150ms):</label>
-        <input type="password" class="modal-input" id="deepgramKeyInput" placeholder="Optional: dg_live_..." />
-
-        <label class="modal-label">TYPESAFE JEV SYSTEM ONE API KEY (Cloud Cognition):</label>
+        <label class="modal-label">TYPESAFE JEV SYSTEM ONE API KEY (Optional Cloud Inference):</label>
         <input type="password" class="modal-input" id="apiKeyInput" placeholder="Optional: jev_live_sk_..." />
 
         <div style="font-size: 11px; color: var(--text-mid); margin-bottom: 16px; line-height: 1.5;">
-            • When Deepgram is configured, live raw audio streams over WebSockets with <strong>150ms latency</strong>.<br>
-            • Otherwise, uses ultra-fast continuous in-browser streaming audio directly into JEV's 1ms Rust RAG.
+            • Live transcribing is powered by local Whisper streaming on <code>ws://localhost:8994</code> with zero cloud dependency.<br>
+            • Browser speech recognition runs in parallel for instant token streaming.
         </div>
 
         <div class="modal-btns">
             <button class="btn-ghost" onclick="toggleApiKeyModal()">CLOSE</button>
-            <button class="btn-action-primary" onclick="saveSettings()">SAVE SETTINGS</button>
+            <button class="btn-action-primary" onclick="saveSettings()">SAVE</button>
         </div>
     </div>
 </div>
 
 <script>
     // State
-    let currentSpeaker = "customer"; // "customer" or "salesperson"
+    let currentSpeaker = "customer";
     let isClientListening = false;
     let isSalesListening = false;
     let recognition = null;
-    let deepgramSocket = null;
-    let mediaRecorder = null;
-    let audioStream = null;
-    let clientSeconds = 45;
-    let salesSeconds = 25;
+    let whisperSocket = null;
+    let audioContext = null;
+    let analyser = null;
+    let micStream = null;
+    let scriptProcessor = null;
+    let animFrame = null;
+
+    let clientSeconds = 0;
+    let salesSeconds = 0;
 
     // Talk time tracking
     setInterval(() => {
         if (isClientListening) clientSeconds++;
         if (isSalesListening) salesSeconds++;
-        updatePacingDisplay();
+        if (clientSeconds > 0 || salesSeconds > 0) {
+            updatePacingDisplay();
+        }
     }, 1000);
 
     function updatePacingDisplay() {
@@ -798,28 +888,24 @@
     // Toggle Client Mic
     function toggleClientMic() {
         if (isClientListening) {
-            stopAudioStream();
+            stopAllAudio();
             setClientActive(false);
         } else {
-            if (isSalesListening) {
-                setSalesActive(false);
-            }
+            if (isSalesListening) setSalesActive(false);
             setClientActive(true);
-            startFastStreamingTranscription("customer");
+            startLiveTranscribing("customer");
         }
     }
 
     // Toggle Salesperson Mic
     function toggleSalesMic() {
         if (isSalesListening) {
-            stopAudioStream();
+            stopAllAudio();
             setSalesActive(false);
         } else {
-            if (isClientListening) {
-                setClientActive(false);
-            }
+            if (isClientListening) setClientActive(false);
             setSalesActive(true);
-            startFastStreamingTranscription("salesperson");
+            startLiveTranscribing("salesperson");
         }
     }
 
@@ -828,18 +914,24 @@
         const btn = document.getElementById("btnClient");
         const pill = document.getElementById("clientPill");
         const status = document.getElementById("activeChannelStatus");
+        const badge = document.getElementById("streamSpeakerBadge");
+        const hud = document.getElementById("liveStreamedHud");
 
         if (active) {
             btn.classList.add("active");
-            pill.innerText = "● STREAMING LIVE";
-            status.innerText = "CLIENT SPEAKING // FAST-FORWARDING JEV RADAR";
+            pill.innerText = "● TRANSCRIBING LIVE";
+            status.innerText = "CLIENT SPEAKING // TRANSCRIBING FROM MIC";
             status.style.color = "var(--hazard-red)";
+            badge.innerText = "CLIENT LIVE MIC:";
+            badge.style.color = "var(--hazard-red)";
+            hud.className = "live-streamed-talking-hud active-red";
             currentSpeaker = "customer";
         } else {
             btn.classList.remove("active");
-            pill.innerText = "CLICK TO TALK";
+            pill.innerText = "CLICK TO TRANSCRIBE";
             status.innerText = "STANDBY // READY";
             status.style.color = "var(--text-dim)";
+            hud.className = "live-streamed-talking-hud";
         }
     }
 
@@ -848,72 +940,139 @@
         const btn = document.getElementById("btnSales");
         const pill = document.getElementById("salesPill");
         const status = document.getElementById("activeChannelStatus");
+        const badge = document.getElementById("streamSpeakerBadge");
+        const hud = document.getElementById("liveStreamedHud");
 
         if (active) {
             btn.classList.add("active");
-            pill.innerText = "● COACHING ACTIVE";
-            status.innerText = "SALESPERSON SPEAKING // CADENCE COACH ACTIVE";
+            pill.innerText = "● COACH ACTIVE";
+            status.innerText = "SALESPERSON SPEAKING // COACH ACTIVE";
             status.style.color = "var(--terminal-green)";
+            badge.innerText = "SALESPERSON LIVE MIC:";
+            badge.style.color = "var(--terminal-green)";
+            hud.className = "live-streamed-talking-hud active-green";
             currentSpeaker = "salesperson";
         } else {
             btn.classList.remove("active");
-            pill.innerText = "CLICK TO TALK";
+            pill.innerText = "CLICK TO TRANSCRIBE";
             status.innerText = "STANDBY // READY";
             status.style.color = "var(--text-dim)";
+            hud.className = "live-streamed-talking-hud";
         }
     }
 
-    // FASTEST STREAMING TRANSCRIPTION (DEEPGRAM NOVA-2 WEBSOCKET OR CONTINUOUS INTERIM ASR)
-    async function startFastStreamingTranscription(speaker) {
-        const dgKey = localStorage.getItem("deepgram_api_key");
+    // REAL-TIME LIVE TRANSCRIBING (DUAL ENGINE: LOCAL WHISPER WEBSOCKET + BROWSER ASR)
+    async function startLiveTranscribing(speaker) {
+        // 1. Start live audio visualizer & local Whisper WebSocket stream
+        await startLocalWhisperMicStream(speaker);
 
-        if (dgKey) {
-            // Mode 1: Deepgram Nova-2 WebSockets (<150ms latency)
-            startDeepgramNova2Streaming(dgKey, speaker);
-        } else {
-            // Mode 2: Ultra-Fast Continuous In-Browser Stream with Instant Syllable Interim Matching
-            startNativeFastStreaming(speaker);
-        }
+        // 2. Also start native browser speech recognition in parallel
+        startBrowserSpeechRecognition(speaker);
     }
 
-    // Deepgram Nova-2 Real-Time WebSocket Streaming (<150ms)
-    async function startDeepgramNova2Streaming(apiKey, speaker) {
+    // Init Whisper WebSocket eagerly
+    function initWhisperSocket() {
+        if (whisperSocket && (whisperSocket.readyState === WebSocket.OPEN || whisperSocket.readyState === WebSocket.CONNECTING)) {
+            return;
+        }
         try {
-            audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            const wsUrl = `wss://api.deepgram.com/v1/listen?model=nova-2&smart_format=true&interim_results=true&endpointing=250`;
-            deepgramSocket = new WebSocket(wsUrl, ["token", apiKey.trim()]);
+            const host = window.location.hostname || "127.0.0.1";
+            whisperSocket = new WebSocket(`ws://${host}:8994`);
+            whisperSocket.onopen = () => {
+                const badge = document.getElementById("asrSourceBadge");
+                if (badge) badge.innerText = "ASR: LOCAL WHISPER (CONNECTED)";
+            };
+            whisperSocket.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    if (data.text && data.text.trim()) {
+                        handleIncomingLiveTranscript(data.text.trim(), currentSpeaker);
+                    }
+                } catch(e) {}
+            };
+            whisperSocket.onerror = () => {
+                const badge = document.getElementById("asrSourceBadge");
+                if (badge) badge.innerText = "ASR: BROWSER / LOCAL WHISPER";
+            };
+            whisperSocket.onclose = () => {
+                setTimeout(initWhisperSocket, 2500);
+            };
+        } catch(e) {}
+    }
 
-            deepgramSocket.onopen = () => {
-                document.getElementById("radarLatencyBadge").innerText = "DEEPGRAM NOVA-2: STREAMING (150ms)";
-                mediaRecorder = new MediaRecorder(audioStream, { mimeType: "audio/webm;codecs=opus" });
-                mediaRecorder.ondataavailable = (event) => {
-                    if (event.data.size > 0 && deepgramSocket && deepgramSocket.readyState === WebSocket.OPEN) {
-                        deepgramSocket.send(event.data);
+    // Connect immediately on page load
+    initWhisperSocket();
+
+    // Local Whisper Streamer Connection (ws://127.0.0.1:8994)
+    async function startLocalWhisperMicStream(speaker) {
+        initWhisperSocket();
+        try {
+            if (!micStream) {
+                micStream = await navigator.mediaDevices.getUserMedia({ 
+                    audio: { 
+                        channelCount: 1, 
+                        sampleRate: 16000,
+                        echoCancellation: true,
+                        noiseSuppression: true
+                    } 
+                });
+            }
+            
+            if (whisperSocket && whisperSocket.readyState === WebSocket.OPEN) {
+                whisperSocket.send(JSON.stringify({ type: "reset" }));
+                document.getElementById("asrSourceBadge").innerText = "ASR: LOCAL WHISPER (STREAMING)";
+                document.getElementById("streamSpeedBadge").innerText = "MICROPHONE: STREAMING LIVE TO WHISPER";
+            }
+
+            if (!audioContext || audioContext.state === 'closed') {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)({ sampleRate: 16000 });
+                const source = audioContext.createMediaStreamSource(micStream);
+                analyser = audioContext.createAnalyser();
+                analyser.fftSize = 64;
+                source.connect(analyser);
+
+                scriptProcessor = audioContext.createScriptProcessor(4096, 1, 1);
+                source.connect(scriptProcessor);
+                scriptProcessor.connect(audioContext.destination);
+
+                scriptProcessor.onaudioprocess = (e) => {
+                    if (!isClientListening && !isSalesListening) return;
+                    const inputData = e.inputBuffer.getChannelData(0);
+                    if (whisperSocket && whisperSocket.readyState === WebSocket.OPEN) {
+                        whisperSocket.send(inputData.buffer);
                     }
                 };
-                mediaRecorder.start(100); // 100ms audio chunks
-            };
+            } else if (audioContext.state === 'suspended') {
+                await audioContext.resume();
+            }
 
-            deepgramSocket.onmessage = (message) => {
-                const received = JSON.parse(message.data);
-                const transcript = received.channel?.alternatives[0]?.transcript;
-                if (transcript && transcript.trim().length > 3) {
-                    if (speaker === "customer") {
-                        triggerAnalyze(transcript, "customer");
-                    }
+            // Frequency visualizer
+            const dataArray = new Uint8Array(analyser.frequencyBinCount);
+            const bars = document.querySelectorAll(".v-bar");
+
+            function updateWave() {
+                if (!isClientListening && !isSalesListening) {
+                    bars.forEach(b => b.style.height = "4px");
+                    return;
                 }
-            };
+                analyser.getByteFrequencyData(dataArray);
+                for (let i = 0; i < bars.length; i++) {
+                    const val = dataArray[i % dataArray.length] || 0;
+                    const h = Math.max(4, Math.min(22, Math.round(val / 10)));
+                    bars[i].style.height = h + "px";
+                }
+                animFrame = requestAnimationFrame(updateWave);
+            }
+            updateWave();
 
-            deepgramSocket.onerror = () => {
-                startNativeFastStreaming(speaker);
-            };
-        } catch (e) {
-            startNativeFastStreaming(speaker);
+        } catch (err) {
+            console.warn("Local mic capture error:", err);
+            document.getElementById("activeChannelStatus").innerText = "MIC PERMISSION REQUIRED // PLEASE ALLOW MIC IN BROWSER";
         }
     }
 
-    // Native Fast Interim Token Streaming
-    function startNativeFastStreaming(speaker) {
+    // Parallel Native Speech Recognition (Fallback/Fast-Path)
+    function startBrowserSpeechRecognition(speaker) {
         window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!window.SpeechRecognition) return;
 
@@ -930,10 +1089,8 @@
                     text += event.results[i][0].transcript;
                 }
                 const utterance = text.trim();
-                if (utterance && utterance.length > 3) {
-                    if (speaker === "customer") {
-                        triggerAnalyze(utterance, "customer");
-                    }
+                if (utterance) {
+                    handleIncomingLiveTranscript(utterance, speaker);
                 }
             };
 
@@ -948,21 +1105,47 @@
         } catch (e) {}
     }
 
-    function stopAudioStream() {
-        if (mediaRecorder && mediaRecorder.state !== "inactive") {
-            try { mediaRecorder.stop(); } catch(e) {}
+    // Handle Transcribed Speech (Updates Ticker & Queries JEV in 1ms)
+    let lastSpokenText = "";
+    function handleIncomingLiveTranscript(text, speaker) {
+        if (!text || text === lastSpokenText) return;
+        lastSpokenText = text;
+
+        // 1. Show spoken words live in the ticker
+        const display = document.getElementById("streamingWordsText");
+        display.style.color = "#FFFFFF";
+        display.innerText = text;
+
+        // 2. Trigger JEV RAG Analysis
+        if (speaker === "customer") {
+            triggerAnalyze(text, "customer");
         }
-        if (deepgramSocket) {
-            try { deepgramSocket.close(); } catch(e) {}
-            deepgramSocket = null;
+    }
+
+    function stopAllAudio() {
+        if (whisperSocket) {
+            try { whisperSocket.close(); } catch(e) {}
+            whisperSocket = null;
         }
-        if (audioStream) {
-            audioStream.getTracks().forEach(t => t.stop());
-            audioStream = null;
+        if (scriptProcessor) {
+            try { scriptProcessor.disconnect(); } catch(e) {}
+            scriptProcessor = null;
+        }
+        if (audioContext) {
+            try { audioContext.close(); } catch(e) {}
+            audioContext = null;
+        }
+        if (micStream) {
+            micStream.getTracks().forEach(t => t.stop());
+            micStream = null;
         }
         if (recognition) {
             try { recognition.stop(); } catch(e) {}
             recognition = null;
+        }
+        if (animFrame) {
+            cancelAnimationFrame(animFrame);
+            animFrame = null;
         }
     }
 
@@ -992,47 +1175,61 @@
     }
 
     function renderTeleprompterData(data) {
+        // Highlight active cards
+        document.getElementById("heroScriptCard").classList.add("active-prompt");
+        const scriptEl = document.getElementById("teleprompterScript");
+        scriptEl.classList.add("live-loaded");
+
         document.getElementById("categoryTag").innerText = data.detected_emotion || "PRICE_AND_BUDGET";
+        document.getElementById("categoryTag").style.background = "var(--amber-dim)";
+        document.getElementById("categoryTag").style.color = "var(--amber)";
+
         document.getElementById("stateOfBeingBadge").innerText = data.state_of_being || "EVALUATING // CAUTIOUS";
-        document.getElementById("unspokenSubtextText").innerText = `"${data.unspoken_subtext}"`;
-        document.getElementById("predictionNextSayText").innerText = data.expected_next_say;
-        document.getElementById("teleprompterScript").innerText = `"${data.exact_script_to_say}"`;
+        document.getElementById("stateOfBeingBadge").style.background = "var(--amber-dim)";
+        document.getElementById("stateOfBeingBadge").style.color = "var(--amber)";
+        document.getElementById("stateOfBeingBadge").style.borderColor = "rgba(245, 158, 11, 0.4)";
+
+        const subtextEl = document.getElementById("unspokenSubtextText");
+        subtextEl.innerText = `"${data.unspoken_subtext}"`;
+        subtextEl.style.color = "var(--text-high)";
+        subtextEl.style.borderLeftColor = "var(--amber)";
+
+        document.getElementById("predictConfidenceTag").innerText = `CONFIDENCE: ${data.confidence_pct}%`;
+        document.getElementById("predictConfidenceTag").style.background = "var(--accent-cyan-dim)";
+        document.getElementById("predictConfidenceTag").style.color = "var(--accent-cyan)";
+
+        const predEl = document.getElementById("predictionNextSayText");
+        predEl.innerText = `"${data.expected_next_say}"`;
+        predEl.style.color = "#A5F3FC";
+        predEl.style.borderLeftColor = "var(--accent-cyan)";
+
+        scriptEl.innerText = `"${data.exact_script_to_say}"`;
         document.getElementById("bookCitationBadge").innerText = (data.book_source || "CHRIS VOSS").toUpperCase();
-        document.getElementById("deliveryToneText").innerText = data.delivery_tone;
-        document.getElementById("secondaryFollowupText").innerText = `"${data.secondary_followup}"`;
-        document.getElementById("psychologicalPrincipleText").innerText = data.psychological_principle;
+        document.getElementById("bookCitationBadge").style.background = "var(--accent-orange)";
+        document.getElementById("bookCitationBadge").style.color = "#000";
+
+        const toneEl = document.getElementById("deliveryToneText");
+        toneEl.innerText = data.delivery_tone;
+        toneEl.style.color = "var(--text-high)";
+
+        const followupEl = document.getElementById("secondaryFollowupText");
+        followupEl.innerText = `"${data.secondary_followup}"`;
+        followupEl.style.color = "#A7F3D0";
+        followupEl.style.borderLeftColor = "var(--terminal-green)";
+
+        const mechEl = document.getElementById("psychologicalPrincipleText");
+        mechEl.innerText = data.psychological_principle;
+        mechEl.style.color = "var(--text-high)";
+
         document.getElementById("frameworkTag").innerText = (data.recommended_framework || "TACTICAL EMPATHY").toUpperCase();
+        document.getElementById("frameworkTag").style.background = "var(--surface-elevated)";
+        document.getElementById("frameworkTag").style.color = "var(--text-high)";
 
         if (data.telemetry) {
             document.getElementById("radarLatencyBadge").innerText = `RADAR: ${data.telemetry.latency_ms}ms`;
-            document.getElementById("predictConfidenceTag").innerText = `CONFIDENCE: ${data.confidence_pct}%`;
             document.getElementById("telemetryFooter").innerText = `MODEL: ${data.telemetry.model} | LOCAL SIMD: ${data.telemetry.latency_ms}ms | CONFIDENCE: ${data.confidence_pct}%`;
         }
     }
-
-    // Fast Shortcut Simulate
-    function quickAnalyze(text) {
-        setClientActive(true);
-        triggerAnalyze(text, "customer");
-    }
-
-    // Keyboard Shortcuts (1-8)
-    window.addEventListener("keydown", (e) => {
-        if (e.target.tagName === "INPUT") return;
-        const map = {
-            "1": "That price is way too high for us right now",
-            "2": "What is your money back guarantee if this flops?",
-            "3": "Can you show me reviews or case studies of someone like me?",
-            "4": "Let me think about it and circle back next week",
-            "5": "I need to talk to my partner and check with my boss first",
-            "6": "This sounds too good to be true, what is the catch?",
-            "7": "We can do this ourselves with internal tools",
-            "8": "I do not have time or bandwidth right now"
-        };
-        if (map[e.key]) {
-            quickAnalyze(map[e.key]);
-        }
-    });
 
     // Text to Speech
     function speakTeleprompterScript() {
@@ -1058,22 +1255,17 @@
         const m = document.getElementById("apiKeyModal");
         m.style.display = m.style.display === "flex" ? "none" : "flex";
         if (m.style.display === "flex") {
-            document.getElementById("deepgramKeyInput").value = localStorage.getItem("deepgram_api_key") || "";
             document.getElementById("apiKeyInput").value = localStorage.getItem("typesafe_api_key") || "";
         }
     }
 
     function saveSettings() {
-        const dg = document.getElementById("deepgramKeyInput").value.trim();
         const ts = document.getElementById("apiKeyInput").value.trim();
-        if (dg) localStorage.setItem("deepgram_api_key", dg);
-        else localStorage.removeItem("deepgram_api_key");
-
         if (ts) localStorage.setItem("typesafe_api_key", ts);
         else localStorage.removeItem("typesafe_api_key");
 
         toggleApiKeyModal();
-        alert("Settings saved! Ultra-fast streaming active.");
+        alert("Settings saved!");
     }
 </script>
 

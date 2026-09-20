@@ -50,8 +50,10 @@ async fn main() {
 }
 
 async fn index_handler() -> impl IntoResponse {
-    let html = include_str!("../static/index.html");
-    Html(html)
+    match tokio::fs::read_to_string("static/index.html").await {
+        Ok(html) => Html(html),
+        Err(_) => Html(include_str!("../static/index.html").to_string()),
+    }
 }
 
 async fn analyze_handler(
