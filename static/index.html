@@ -517,6 +517,8 @@
                     <div class="mic-title">
                         <span style="color: var(--hazard-red);">● PROSPECT / CUSTOMER CHANNEL</span>
                         <span id="cust-mic-status" style="font-size: 9px; color: var(--text-dim);">STANDBY</span>
+                    <div id="network-fallback-alert" style="display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid var(--hazard-red); padding: 8px 10px; font-size: 10px; color: #FCA5A5; margin-bottom: 10px; line-height: 1.4;">
+                        ⚠️ <strong>Cloud Speech Notice:</strong> Chrome's Web Speech API requires an unblocked link to Google's speech servers (often blocked on VPNs or in privacy browsers like Brave). You can type directly, click the 1-click chips below, or use <strong>[ 🔊 HEAR PROSPECT SPEAK ]</strong>!
                     </div>
 
                     <button class="btn-mic" id="btn-cust-mic" onclick="toggleCustomerMic()">
@@ -530,6 +532,11 @@
                     </div>
 
                     <textarea class="utterance-input" id="cust-utterance" placeholder="Speak or type what the customer says... (e.g. 'Your price is way too high')" oninput="onCustomerInputDebounced()"></textarea>
+
+                    <div style="display: flex; gap: 8px; margin-top: 8px;">
+                        <button class="btn btn-sm" style="flex: 1; font-size: 10px;" onclick="speakCustomerUtterance()">[ 🔊 HEAR PROSPECT SPEAK ]</button>
+                        <button class="btn btn-sm" style="font-size: 10px;" onclick="clearUtterance()">[ CLEAR ]</button>
+                    </div>
 
                     <div class="chips-title">Quick-Fire Real-Life Objection Chips:</div>
                     <div class="chips-grid">
@@ -616,7 +623,10 @@
                             <span class="book-pill" id="hud-book">CHRIS VOSS — 'NEVER SPLIT THE DIFFERENCE'</span>
                             <span id="hud-framework" style="font-size: 11px; color: var(--text-mid); font-weight: 700;">Tactical Empathy & Calibrated Labeling</span>
                         </div>
-                        <button class="btn" style="padding: 3px 8px; font-size: 10px;" onclick="copyTeleprompterScript()">[ COPY SCRIPT ]</button>
+                        <div style="display: flex; gap: 6px;">
+                            <button class="btn" style="padding: 3px 8px; font-size: 10px; background: var(--terminal-green); color: #000; font-weight: 800;" onclick="speakVossScript()">[ 🔊 HEAR VOSS FM DJ VOICE ]</button>
+                            <button class="btn" style="padding: 3px 8px; font-size: 10px;" onclick="copyTeleprompterScript()">[ COPY SCRIPT ]</button>
+                        </div>
                     </div>
 
                     <div style="font-size: 10px; text-transform: uppercase; color: var(--accent-orange); font-weight: 800; margin-bottom: 6px;">
@@ -718,6 +728,41 @@
             setTimeout(() => { t.style.display = "none"; }, 3000);
         }
 
+        let audioCtx = null;
+        let analyser = null;
+        let micStream = null;
+        let dataArray = null;
+        let animFrameId = null;
+
+        async function initHardwareAudio() {
+            if (micStream) return true;
+            try {
+                micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                analyser = audioCtx.createAnalyser();
+                analyser.fftSize = 32;
+                dataArray = new Uint8Array(analyser.frequencyBinCount);
+                const source = audioCtx.createMediaStreamSource(micStream);
+                source.connect(analyser);
+                return true;
+            } catch (err) {
+                console.warn("Hardware mic access:", err);
+                return false;
+            }
+        }
+
+        function updateHardwareWaves(containerId) {
+            if (!analyser || (!isCustListening && !isSalesListening)) return;
+            analyser.getByteFrequencyData(dataArray);
+            const bars = document.querySelectorAll(`#${containerId} .wave-bar`);
+            bars.forEach((b, idx) => {
+                const val = dataArray[idx % dataArray.length] || 0;
+                const h = Math.max(4, Math.min(24, Math.round((val / 255) * 24)));
+                b.style.height = `${h}px`;
+            });
+            animFrameId = requestAnimationFrame(() => updateHardwareWaves(containerId));
+        }
+
         function initSpeechRecognition() {
             const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
             if (!SpeechRec) {
@@ -726,66 +771,90 @@
             }
 
             // Customer Channel
-            custRecognition = new SpeechRec();
-            custRecognition.continuous = true;
-            custRecognition.interimResults = true;
-            custRecognition.lang = "en-US";
+            try {
+                custRecognition = new SpeechRec();
+                custRecognition.continuous = true;
+                custRecognition.interimResults = true;
+                custRecognition.lang = "en-US";
 
-            custRecognition.onresult = (event) => {
-                let interim = "";
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    interim += event.results[i][0].transcript;
-                }
-                document.getElementById("cust-utterance").value = interim;
-                onCustomerInputDebounced();
-            };
+                custRecognition.onresult = (event) => {
+                    let interim = "";
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        interim += event.results[i][0].transcript;
+                    }
+                    document.getElementById("cust-utterance").value = interim;
+                    onCustomerInputDebounced();
+                };
 
-            custRecognition.onerror = (e) => {
-                console.error("Cust Mic Error:", e.error);
-                stopCustomerMic();
-            };
+                custRecognition.onerror = (e) => {
+                    if (e.error === "network") {
+                        const alertBox = document.getElementById("network-fallback-alert");
+                        if (alertBox) alertBox.style.display = "block";
+                        document.getElementById("cust-mic-status").textContent = "LOCAL MIC (GOOGLE STT RESTRICTED)";
+                    } else if (e.error === "not-allowed") {
+                        document.getElementById("cust-mic-status").textContent = "MIC PERMISSION BLOCKED";
+                        alert("Microphone permission was denied. Please allow microphone access in your browser settings.");
+                    } else {
+                        console.warn("Speech recognition notice:", e.error);
+                    }
+                    stopCustomerMic();
+                };
+            } catch(e) {
+                console.warn("SpeechRec init error:", e);
+            }
 
             // Sales Rep Channel
-            salesRecognition = new SpeechRec();
-            salesRecognition.continuous = true;
-            salesRecognition.interimResults = true;
-            salesRecognition.lang = "en-US";
+            try {
+                salesRecognition = new SpeechRec();
+                salesRecognition.continuous = true;
+                salesRecognition.interimResults = true;
+                salesRecognition.lang = "en-US";
 
-            salesRecognition.onresult = (event) => {
-                let interim = "";
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    interim += event.results[i][0].transcript;
-                }
-                document.getElementById("sales-utterance").value = interim;
-            };
+                salesRecognition.onresult = (event) => {
+                    let interim = "";
+                    for (let i = event.resultIndex; i < event.results.length; ++i) {
+                        interim += event.results[i][0].transcript;
+                    }
+                    document.getElementById("sales-utterance").value = interim;
+                };
 
-            salesRecognition.onerror = (e) => {
-                console.error("Sales Mic Error:", e.error);
-                stopSalesMic();
-            };
-        }
-
-        function toggleCustomerMic() {
-            if (isCustListening) {
-                stopCustomerMic();
-            } else {
-                startCustomerMic();
+                salesRecognition.onerror = (e) => {
+                    if (e.error === "network") {
+                        document.getElementById("sales-mic-status").textContent = "LOCAL MIC (GOOGLE STT RESTRICTED)";
+                    }
+                    stopSalesMic();
+                };
+            } catch(e) {
+                console.warn("Sales SpeechRec init error:", e);
             }
         }
 
-        function startCustomerMic() {
+        async function toggleCustomerMic() {
+            if (isCustListening) {
+                stopCustomerMic();
+            } else {
+                await startCustomerMic();
+            }
+        }
+
+        async function startCustomerMic() {
             if (isSalesListening) stopSalesMic();
+            await initHardwareAudio();
             try {
                 custRecognition && custRecognition.start();
-                isCustListening = true;
-                const btn = document.getElementById("btn-cust-mic");
-                btn.classList.add("recording-cust");
-                btn.innerHTML = "🔴 [ LISTENING AS CUSTOMER... SPEAK NOW ]";
-                document.getElementById("cust-mic-status").textContent = "RECORDING (LIVE)";
-                document.getElementById("cust-box").classList.add("active-customer");
+            } catch (e) {}
+
+            isCustListening = true;
+            const btn = document.getElementById("btn-cust-mic");
+            btn.classList.add("recording-cust");
+            btn.innerHTML = "🔴 [ LISTENING AS CUSTOMER... SPEAK NOW ]";
+            document.getElementById("cust-mic-status").textContent = "RECORDING (LIVE)";
+            document.getElementById("cust-box").classList.add("active-customer");
+            
+            if (analyser) {
+                updateHardwareWaves("cust-wave");
+            } else {
                 animateWaves("cust-wave", true);
-            } catch (e) {
-                console.error(e);
             }
         }
 
@@ -793,6 +862,7 @@
             try {
                 custRecognition && custRecognition.stop();
             } catch(e) {}
+            if (animFrameId) cancelAnimationFrame(animFrameId);
             isCustListening = false;
             const btn = document.getElementById("btn-cust-mic");
             btn.classList.remove("recording-cust");
@@ -802,32 +872,40 @@
             animateWaves("cust-wave", false);
         }
 
-        function toggleSalesMic() {
+        async function toggleSalesMic() {
             if (isSalesListening) {
                 stopSalesMic();
             } else {
-                startSalesMic();
+                await startSalesMic();
             }
         }
 
-        function startSalesMic() {
+        async function startSalesMic() {
             if (isCustListening) stopCustomerMic();
+            await initHardwareAudio();
             try {
                 salesRecognition && salesRecognition.start();
-                isSalesListening = true;
-                const btn = document.getElementById("btn-sales-mic");
-                btn.classList.add("recording-sales");
-                btn.innerHTML = "🟢 [ RECORDING SALES REP RESPONSE... ]";
-                document.getElementById("sales-mic-status").textContent = "SPEAKING (LIVE)";
-                document.getElementById("sales-box").classList.add("active-sales");
-                animateWaves("sales-wave", true);
             } catch(e) {}
+
+            isSalesListening = true;
+            const btn = document.getElementById("btn-sales-mic");
+            btn.classList.add("recording-sales");
+            btn.innerHTML = "🟢 [ RECORDING SALES REP RESPONSE... ]";
+            document.getElementById("sales-mic-status").textContent = "SPEAKING (LIVE)";
+            document.getElementById("sales-box").classList.add("active-sales");
+
+            if (analyser) {
+                updateHardwareWaves("sales-wave");
+            } else {
+                animateWaves("sales-wave", true);
+            }
         }
 
         function stopSalesMic() {
             try {
                 salesRecognition && salesRecognition.stop();
             } catch(e) {}
+            if (animFrameId) cancelAnimationFrame(animFrameId);
             isSalesListening = false;
             const btn = document.getElementById("btn-sales-mic");
             btn.classList.remove("recording-sales");
@@ -835,6 +913,44 @@
             document.getElementById("sales-mic-status").textContent = "STANDBY";
             document.getElementById("sales-box").classList.remove("active-sales");
             animateWaves("sales-wave", false);
+        }
+
+        function speakCustomerUtterance() {
+            const text = document.getElementById("cust-utterance").value.trim();
+            if (!text) {
+                showToast("Type or select an objection first to hear it spoken!");
+                return;
+            }
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis not supported in this browser.");
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.rate = 1.0;
+            u.pitch = 1.05;
+            window.speechSynthesis.speak(u);
+            showToast("Playing customer objection speech...");
+        }
+
+        function speakVossScript() {
+            const text = document.getElementById("hud-script").textContent.replace(/^"|"$/g, '').trim();
+            if (!text) return;
+            if (!('speechSynthesis' in window)) {
+                alert("Speech synthesis not supported in this browser.");
+                return;
+            }
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(text);
+            u.rate = 0.88; // Late-night FM DJ calm cadence
+            u.pitch = 0.85; // Deeper, confident pitch
+            window.speechSynthesis.speak(u);
+            showToast("Speaking teleprompter script in Chris Voss FM DJ cadence...");
+        }
+
+        function clearUtterance() {
+            document.getElementById("cust-utterance").value = "";
+            document.getElementById("cust-utterance").focus();
         }
 
         function animateWaves(containerId, active) {
