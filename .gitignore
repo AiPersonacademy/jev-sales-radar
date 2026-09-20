@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+*.key
+.env
+.env.*
+*.log
+capture_ui.py
+__pycache__/
+.vscode/
+.idea/

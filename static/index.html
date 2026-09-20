@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JEV SALES RADAR // SUB-25MS LIVE SALES COPILOT</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #0C0E12;
+            --surface: #14171F;
+            --surface-elevated: #1B202B;
+            --surface-input: #090B0E;
+            --border: #2A3142;
+            --border-highlight: #3F4A63;
+            
+            --accent-orange: #FF5A1F;
+            --accent-orange-dim: rgba(255, 90, 31, 0.15);
+            --accent-cyan: #06B6D4;
+            --accent-cyan-dim: rgba(6, 182, 212, 0.12);
+            --hazard-red: #EF4444;
+            --hazard-red-dim: rgba(239, 68, 68, 0.15);
+            --terminal-green: #10B981;
+            --terminal-green-dim: rgba(16, 185, 129, 0.15);
+            
+            --text-high: #F8FAFC;
+            --text-mid: #94A3B8;
+            --text-dim: #64748B;
+            
+            --font-display: "Space Grotesk", sans-serif;
+            --font-mono: "JetBrains Mono", monospace;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-high);
+            font-family: var(--font-mono);
+            font-size: 12px;
+            line-height: 1.45;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* Tactical Grid Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 24px 24px;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .app-container {
+            position: relative;
+            z-index: 2;
+            max-width: 1680px;
+            margin: 0 auto;
+            padding: 16px 20px;
+        }
+
+        /* HEADER COMMAND BAR */
+        .command-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            margin-bottom: 16px;
+        }
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-family: var(--font-display);
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+        }
+        .brand .badge {
+            background: var(--accent-orange);
+            color: #000;
+            padding: 2px 7px;
+            font-size: 11px;
+            font-weight: 800;
+            font-family: var(--font-mono);
+        }
+        .telemetry-status {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            font-size: 11px;
+        }
+        .badge-live {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--terminal-green-dim);
+            color: var(--terminal-green);
+            border: 1px solid var(--terminal-green);
+            padding: 3px 8px;
+            font-weight: 700;
+        }
+        .pulse-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--terminal-green);
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* MAIN TWO-WAY WORKSPACE GRID */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 460px 1fr;
+            gap: 16px;
+            min-height: calc(100vh - 120px);
+        }
+
+        /* PANELS */
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            font-family: var(--font-display);
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* TWO-WAY MIC STATIONS */
+        .mic-box {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            padding: 14px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .mic-box.active-customer {
+            border-color: var(--hazard-red);
+            box-shadow: 0 0 15px var(--hazard-red-dim);
+        }
+        .mic-box.active-sales {
+            border-color: var(--terminal-green);
+            box-shadow: 0 0 15px var(--terminal-green-dim);
+        }
+        .mic-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+        .btn-mic {
+            width: 100%;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            color: var(--text-high);
+            transition: all 0.15s ease;
+        }
+        .btn-mic:hover {
+            border-color: var(--text-high);
+        }
+        .btn-mic.recording-cust {
+            background: var(--hazard-red);
+            color: #FFFFFF;
+            border-color: var(--hazard-red);
+            animation: pulse-border 1.2s infinite;
+        }
+        .btn-mic.recording-sales {
+            background: var(--terminal-green);
+            color: #000000;
+            border-color: var(--terminal-green);
+            animation: pulse-border 1.2s infinite;
+        }
+        @keyframes pulse-border {
+            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+        }
+
+        /* LIVE AUDIO WAVEFORM VISUALIZER */
+        .audio-wave {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            height: 24px;
+            margin: 10px 0;
+        }
+        .wave-bar {
+            width: 3px;
+            height: 4px;
+            background: var(--border-highlight);
+            border-radius: 1px;
+            transition: height 0.1s ease;
+        }
+        .recording-cust ~ .audio-wave .wave-bar {
+            background: var(--hazard-red);
+        }
+        .recording-sales ~ .audio-wave .wave-bar {
+            background: var(--terminal-green);
+        }
+
+        /* TEXT INPUT FALLBACK / STREAM */
+        textarea.utterance-input {
+            width: 100%;
+            height: 64px;
+            background: var(--surface-input);
+            border: 1px solid var(--border);
+            color: var(--text-high);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            padding: 8px 10px;
+            outline: none;
+            resize: vertical;
+            margin-top: 8px;
+        }
+        textarea.utterance-input:focus {
+            border-color: var(--accent-orange);
+        }
+
+        /* QUICK-FIRE PRESET OBJECTION CHIPS */
+        .chips-title {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin: 12px 0 6px 0;
+            font-weight: 700;
+        }
+        .chips-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+        .chip {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            padding: 5px 9px;
+            font-size: 10px;
+            cursor: pointer;
+            color: var(--text-mid);
+            transition: all 0.15s ease;
+        }
+        .chip:hover {
+            border-color: var(--accent-orange);
+            color: var(--text-high);
+            background: var(--accent-orange-dim);
+        }
+
+        /* TALK-TO-LISTEN GAUGE */
+        .ratio-box {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            padding: 10px 14px;
+            margin-top: 14px;
+        }
+        .ratio-bar-wrap {
+            display: flex;
+            height: 8px;
+            width: 100%;
+            background: var(--surface-input);
+            overflow: hidden;
+            margin: 6px 0;
+            border: 1px solid var(--border);
+        }
+        .ratio-cust {
+            background: var(--hazard-red);
+            height: 100%;
+            width: 65%;
+            transition: width 0.3s ease;
+        }
+        .ratio-sales {
+            background: var(--terminal-green);
+            height: 100%;
+            width: 35%;
+            transition: width 0.3s ease;
+        }
+
+        /* TELEPROMPTER HERO HUD (RIGHT PANEL) */
+        .hud-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* CARDS */
+        .hud-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            position: relative;
+        }
+        .hud-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            margin-bottom: 8px;
+        }
+
+        /* 1. WHAT THEY ARE REALLY THINKING */
+        .subtext-card {
+            border-left: 4px solid var(--hazard-red);
+            background: rgba(239, 68, 68, 0.03);
+        }
+        .subtext-body {
+            font-family: var(--font-display);
+            font-size: 16px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.4;
+        }
+
+        /* 2. WHAT THEY'RE ABOUT TO SAY NEXT */
+        .trajectory-card {
+            border-left: 4px solid var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.03);
+        }
+        .trajectory-body {
+            font-size: 13px;
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        /* 3. HERO TELEPROMPTER: EXACT SCRIPT TO SAY */
+        .script-hero-card {
+            border: 2px solid var(--accent-orange);
+            background: var(--surface-elevated);
+            box-shadow: 0 4px 20px rgba(255, 90, 31, 0.1);
+            padding: 22px;
+        }
+        .script-badge-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .book-pill {
+            background: var(--accent-orange-dim);
+            color: var(--accent-orange);
+            border: 1px solid var(--accent-orange);
+            padding: 3px 8px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .script-content {
+            font-family: var(--font-display);
+            font-size: 20px;
+            font-weight: 700;
+            color: #FFFFFF;
+            line-height: 1.45;
+            letter-spacing: -0.01em;
+            margin-bottom: 14px;
+            padding: 12px 16px;
+            background: #090B0E;
+            border-left: 5px solid var(--accent-orange);
+        }
+        .followup-box {
+            font-size: 12px;
+            color: var(--text-mid);
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px dashed var(--border);
+            padding: 10px 14px;
+            margin-top: 10px;
+        }
+        .delivery-tone {
+            font-size: 11px;
+            color: var(--terminal-green);
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-high);
+            font-family: var(--font-mono);
+            font-size: 11px;
+            font-weight: 700;
+            padding: 7px 12px;
+            cursor: pointer;
+            text-transform: uppercase;
+            transition: all 0.15s ease;
+        }
+        .btn:hover {
+            border-color: var(--accent-orange);
+            color: var(--accent-orange);
+        }
+        .btn-primary {
+            background: var(--accent-orange);
+            color: #000;
+            border-color: var(--accent-orange);
+        }
+        .btn-primary:hover {
+            background: #E04E19;
+            color: #000;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal.active { display: flex; }
+        .modal-content {
+            background: var(--surface);
+            border: 1px solid var(--border-highlight);
+            width: 700px;
+            max-width: 90vw;
+            padding: 24px;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--accent-orange);
+            color: var(--text-high);
+            padding: 10px 16px;
+            font-size: 11px;
+            font-weight: 700;
+            display: none;
+            z-index: 2000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- COMMAND BAR -->
+        <div class="command-bar">
+            <div class="brand">
+                <span class="badge">■ JEV</span>
+                <span>SALES RADAR // LIVE TELEPROMPTER</span>
+                <span class="badge-live"><span class="pulse-dot"></span> SUB-25MS GATEWAY</span>
+            </div>
+
+            <div class="telemetry-status">
+                <span id="telemetry-latency" style="color: var(--accent-cyan); font-weight: 700;">RADAR LATENCY: 22ms</span>
+                <span style="color: var(--text-dim);">|</span>
+                <button class="btn" onclick="openLibraryModal()">[ SALES BOOK RAG MATRIX ]</button>
+                <button class="btn" onclick="openKeyModal()">[ API KEY ]</button>
+                <button class="btn btn-primary" onclick="testLiveJevConnection()">[ PING JEV ]</button>
+            </div>
+        </div>
+
+        <!-- MAIN WORKSPACE -->
+        <div class="workspace-grid">
+
+            <!-- LEFT COLUMN: TWO-WAY INTERCOM STATION -->
+            <div class="panel">
+                <div class="panel-header">
+                    <span>[ TWO-WAY CALL INTERCOM ]</span>
+                    <span style="font-size: 10px; color: var(--text-dim);">VOICE & TEXT RADAR</span>
+                </div>
+
+                <!-- 1. CUSTOMER MIC CHANNEL -->
+                <div class="mic-box" id="cust-box">
+                    <div class="mic-title">
+                        <span style="color: var(--hazard-red);">● PROSPECT / CUSTOMER CHANNEL</span>
+                        <span id="cust-mic-status" style="font-size: 9px; color: var(--text-dim);">STANDBY</span>
+                    </div>
+
+                    <button class="btn-mic" id="btn-cust-mic" onclick="toggleCustomerMic()">
+                        🎙️ [ PRESS TO SPEAK AS CUSTOMER ]
+                    </button>
+
+                    <div class="audio-wave" id="cust-wave">
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                    </div>
+
+                    <textarea class="utterance-input" id="cust-utterance" placeholder="Speak or type what the customer says... (e.g. 'Your price is way too high')" oninput="onCustomerInputDebounced()"></textarea>
+
+                    <div class="chips-title">Quick-Fire Real-Life Objection Chips:</div>
+                    <div class="chips-grid">
+                        <div class="chip" onclick="triggerPreset('Your price is over our budget and too expensive.')">"Too Expensive"</div>
+                        <div class="chip" onclick="triggerPreset('Can you give us a 30% discount to get this approved?')">"Want Discount"</div>
+                        <div class="chip" onclick="triggerPreset('Competitor X is half the price of your solution.')">"Competitor Cheaper"</div>
+                        <div class="chip" onclick="triggerPreset('Just send me an email with pricing and I will review it.')">"Send Me An Email"</div>
+                        <div class="chip" onclick="triggerPreset('I need to run this past my CEO and executive team.')">"Talk To My Boss"</div>
+                        <div class="chip" onclick="triggerPreset('We are already happy with what we have.')">"Status Quo / Happy"</div>
+                        <div class="chip" onclick="triggerPreset('We already do this in spreadsheets internally.')">"Built In-House"</div>
+                        <div class="chip" onclick="triggerPreset('We have no time to implement new software right now.')">"No Bandwidth"</div>
+                        <div class="chip" onclick="triggerPreset('We need to think about it and revisit next quarter.')">"Think About It"</div>
+                        <div class="chip" onclick="triggerPreset('We have never heard of your company before.')">"Too Small / Startup"</div>
+                    </div>
+                </div>
+
+                <!-- 2. SALESPERSON MIC CHANNEL -->
+                <div class="mic-box" id="sales-box">
+                    <div class="mic-title">
+                        <span style="color: var(--terminal-green);">● SALES REP CHANNEL</span>
+                        <span id="sales-mic-status" style="font-size: 9px; color: var(--text-dim);">STANDBY</span>
+                    </div>
+
+                    <button class="btn-mic" id="btn-sales-mic" onclick="toggleSalesMic()">
+                        🎙️ [ PRESS TO SPEAK AS SALESPERSON ]
+                    </button>
+
+                    <div class="audio-wave" id="sales-wave">
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                        <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                    </div>
+
+                    <textarea class="utterance-input" id="sales-utterance" placeholder="Your live response will record here to track talk-to-listen pacing..."></textarea>
+                </div>
+
+                <!-- 3. TALK-TO-LISTEN PACING GAUGE -->
+                <div class="ratio-box">
+                    <div style="display: flex; justify-content: space-between; font-size: 10px; font-weight: 700;">
+                        <span style="color: var(--hazard-red);">CUSTOMER TALK: <span id="lbl-cust-pct">65%</span></span>
+                        <span style="color: var(--text-dim);">TARGET: 70 / 30 (VOSS RULE)</span>
+                        <span style="color: var(--terminal-green);">REP TALK: <span id="lbl-sales-pct">35%</span></span>
+                    </div>
+                    <div class="ratio-bar-wrap">
+                        <div class="ratio-cust" id="bar-cust"></div>
+                        <div class="ratio-sales" id="bar-sales"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: LIVE TELEPROMPTER HUD -->
+            <div class="panel hud-panel">
+                <div class="panel-header">
+                    <span>[ LIVE ANTICIPATION HUD // CHRIS VOSS & KLAFF RAG MATRIX ]</span>
+                    <span id="hud-timestamp" style="color: var(--accent-orange); font-size: 10px;">READY</span>
+                </div>
+
+                <!-- 1. WHAT THEY ARE REALLY THINKING -->
+                <div class="hud-card subtext-card">
+                    <div class="hud-card-header">
+                        <span>🧠 WHAT THE PROSPECT IS REALLY THINKING (UNSPOKEN FEAR)</span>
+                        <span id="emotion-tag" style="color: var(--hazard-red); font-weight: 800;">FINANCIAL ANXIETY</span>
+                    </div>
+                    <div class="subtext-body" id="hud-subtext">
+                        "I like what I'm seeing, but I'm terrified my CFO will chew me out for spending capital right now. I need an ironclad ROI shield before I put my neck on the line."
+                    </div>
+                </div>
+
+                <!-- 2. WHAT THEY'RE ABOUT TO SAY NEXT -->
+                <div class="hud-card trajectory-card">
+                    <div class="hud-card-header">
+                        <span>🔮 ANTICIPATED NEXT WORDS (IF YOU DO NOT STEER NOW)</span>
+                        <span style="color: var(--accent-cyan); font-weight: 700;">TRAJECTORY FORECAST</span>
+                    </div>
+                    <div class="trajectory-body" id="hud-trajectory">
+                        They will demand an arbitrary 30-50% blanket discount or stall the decision until next fiscal quarter.
+                    </div>
+                </div>
+
+                <!-- 3. HERO TELEPROMPTER: EXACT WORDS TO SAY RIGHT NOW -->
+                <div class="hud-card script-hero-card">
+                    <div class="script-badge-row">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span class="book-pill" id="hud-book">CHRIS VOSS — 'NEVER SPLIT THE DIFFERENCE'</span>
+                            <span id="hud-framework" style="font-size: 11px; color: var(--text-mid); font-weight: 700;">Tactical Empathy & Calibrated Labeling</span>
+                        </div>
+                        <button class="btn" style="padding: 3px 8px; font-size: 10px;" onclick="copyTeleprompterScript()">[ COPY SCRIPT ]</button>
+                    </div>
+
+                    <div style="font-size: 10px; text-transform: uppercase; color: var(--accent-orange); font-weight: 800; margin-bottom: 6px;">
+                        💬 SAY THIS RIGHT NOW INTO THE MIC:
+                    </div>
+
+                    <div class="script-content" id="hud-script">
+                        "It sounds like you're under immense pressure from finance to protect cash flow this quarter, and any new commitment feels like a career risk."
+                    </div>
+
+                    <div class="followup-box">
+                        <strong>🔄 Immediate Secondary Follow-up:</strong>
+                        <div id="hud-followup" style="margin-top: 4px; color: var(--text-high);">
+                            "How does this cost compare to the revenue your team is burning every month by running the current manual setup?"
+                        </div>
+                    </div>
+
+                    <div class="delivery-tone">
+                        <span>🎙️ <strong>Delivery Tone Guide:</strong></span>
+                        <span id="hud-tone">Late-night FM DJ voice: calm, slow, completely devoid of defensive or apologetic pitch.</span>
+                    </div>
+                </div>
+
+                <!-- 4. PSYCHOLOGY FOOTER -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div class="hud-card" style="padding: 12px;">
+                        <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">Psychological Mechanism</div>
+                        <div id="hud-principle" style="font-size: 11px; color: var(--text-mid);">
+                            Disarms defensive amygdala activation by vocalizing their unspoken fear before they defend it.
+                        </div>
+                    </div>
+                    <div class="hud-card" style="padding: 12px;">
+                        <div style="font-size: 10px; color: var(--text-dim); text-transform: uppercase; font-weight: 700; margin-bottom: 4px;">Confidence & Model Routing</div>
+                        <div id="hud-meta" style="font-size: 11px; color: var(--terminal-green); font-weight: 700;">
+                            98.2% Precision Match // Sub-25ms Rust SIMD
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SALES BOOK RAG LIBRARY MODAL -->
+    <div class="modal" id="library-modal">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <div class="panel-header">
+                <span>[ PRE-INDEXED SALES BOOKS IN-MEMORY RAG ]</span>
+                <button class="btn" onclick="closeLibraryModal()">[ CLOSE ]</button>
+            </div>
+            <div id="library-cards-container" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- API KEY CONFIG MODAL -->
+    <div class="modal" id="key-modal">
+        <div class="modal-content" style="width: 500px;">
+            <div class="panel-header">
+                <span>[ TYPESAFE JEV SYSTEM ONE API KEY ]</span>
+                <button class="btn" onclick="closeKeyModal()">[ CLOSE ]</button>
+            </div>
+            <p style="color: var(--text-dim); margin-bottom: 12px; font-size: 11px;">
+                Enter your TypeSafe AI API key to enable real-time sub-25ms cloud decision telemetry. Leave blank for ultra-fast local zero-latency Rust fallback.
+            </p>
+            <input type="password" id="api-key-input" placeholder="apikey_..." style="width: 100%; background: var(--surface-input); border: 1px solid var(--border); padding: 8px; color: var(--text-high); font-family: var(--font-mono); margin-bottom: 14px;">
+            <div style="display: flex; justify-content: flex-end; gap: 8px;">
+                <button class="btn" onclick="closeKeyModal()">Cancel</button>
+                <button class="btn btn-primary" onclick="saveApiKey()">Save & Ping</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let custRecognition = null;
+        let salesRecognition = null;
+        let isCustListening = false;
+        let isSalesListening = false;
+        let debounceTimer = null;
+        let custSeconds = 45;
+        let salesSeconds = 25;
+        let pacerInterval = null;
+
+        window.addEventListener("DOMContentLoaded", () => {
+            initSpeechRecognition();
+            fetchPlaybooks();
+            startPacingTimer();
+        });
+
+        function showToast(msg) {
+            const t = document.getElementById("toast");
+            t.textContent = msg;
+            t.style.display = "block";
+            setTimeout(() => { t.style.display = "none"; }, 3000);
+        }
+
+        function initSpeechRecognition() {
+            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRec) {
+                console.warn("Web Speech API not supported in this browser. Use text input or preset chips.");
+                return;
+            }
+
+            // Customer Channel
+            custRecognition = new SpeechRec();
+            custRecognition.continuous = true;
+            custRecognition.interimResults = true;
+            custRecognition.lang = "en-US";
+
+            custRecognition.onresult = (event) => {
+                let interim = "";
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    interim += event.results[i][0].transcript;
+                }
+                document.getElementById("cust-utterance").value = interim;
+                onCustomerInputDebounced();
+            };
+
+            custRecognition.onerror = (e) => {
+                console.error("Cust Mic Error:", e.error);
+                stopCustomerMic();
+            };
+
+            // Sales Rep Channel
+            salesRecognition = new SpeechRec();
+            salesRecognition.continuous = true;
+            salesRecognition.interimResults = true;
+            salesRecognition.lang = "en-US";
+
+            salesRecognition.onresult = (event) => {
+                let interim = "";
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    interim += event.results[i][0].transcript;
+                }
+                document.getElementById("sales-utterance").value = interim;
+            };
+
+            salesRecognition.onerror = (e) => {
+                console.error("Sales Mic Error:", e.error);
+                stopSalesMic();
+            };
+        }
+
+        function toggleCustomerMic() {
+            if (isCustListening) {
+                stopCustomerMic();
+            } else {
+                startCustomerMic();
+            }
+        }
+
+        function startCustomerMic() {
+            if (isSalesListening) stopSalesMic();
+            try {
+                custRecognition && custRecognition.start();
+                isCustListening = true;
+                const btn = document.getElementById("btn-cust-mic");
+                btn.classList.add("recording-cust");
+                btn.innerHTML = "🔴 [ LISTENING AS CUSTOMER... SPEAK NOW ]";
+                document.getElementById("cust-mic-status").textContent = "RECORDING (LIVE)";
+                document.getElementById("cust-box").classList.add("active-customer");
+                animateWaves("cust-wave", true);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function stopCustomerMic() {
+            try {
+                custRecognition && custRecognition.stop();
+            } catch(e) {}
+            isCustListening = false;
+            const btn = document.getElementById("btn-cust-mic");
+            btn.classList.remove("recording-cust");
+            btn.innerHTML = "🎙️ [ PRESS TO SPEAK AS CUSTOMER ]";
+            document.getElementById("cust-mic-status").textContent = "STANDBY";
+            document.getElementById("cust-box").classList.remove("active-customer");
+            animateWaves("cust-wave", false);
+        }
+
+        function toggleSalesMic() {
+            if (isSalesListening) {
+                stopSalesMic();
+            } else {
+                startSalesMic();
+            }
+        }
+
+        function startSalesMic() {
+            if (isCustListening) stopCustomerMic();
+            try {
+                salesRecognition && salesRecognition.start();
+                isSalesListening = true;
+                const btn = document.getElementById("btn-sales-mic");
+                btn.classList.add("recording-sales");
+                btn.innerHTML = "🟢 [ RECORDING SALES REP RESPONSE... ]";
+                document.getElementById("sales-mic-status").textContent = "SPEAKING (LIVE)";
+                document.getElementById("sales-box").classList.add("active-sales");
+                animateWaves("sales-wave", true);
+            } catch(e) {}
+        }
+
+        function stopSalesMic() {
+            try {
+                salesRecognition && salesRecognition.stop();
+            } catch(e) {}
+            isSalesListening = false;
+            const btn = document.getElementById("btn-sales-mic");
+            btn.classList.remove("recording-sales");
+            btn.innerHTML = "🎙️ [ PRESS TO SPEAK AS SALESPERSON ]";
+            document.getElementById("sales-mic-status").textContent = "STANDBY";
+            document.getElementById("sales-box").classList.remove("active-sales");
+            animateWaves("sales-wave", false);
+        }
+
+        function animateWaves(containerId, active) {
+            const bars = document.querySelectorAll(`#${containerId} .wave-bar`);
+            if (!active) {
+                bars.forEach(b => b.style.height = "4px");
+                return;
+            }
+            bars.forEach(b => {
+                b.style.height = `${Math.floor(Math.random() * 20) + 4}px`;
+            });
+        }
+
+        function startPacingTimer() {
+            setInterval(() => {
+                if (isCustListening) custSeconds += 1;
+                if (isSalesListening) salesSeconds += 1;
+                
+                if (isCustListening) animateWaves("cust-wave", true);
+                if (isSalesListening) animateWaves("sales-wave", true);
+
+                const total = custSeconds + salesSeconds;
+                const custPct = Math.round((custSeconds / total) * 100);
+                const salesPct = 100 - custPct;
+
+                document.getElementById("lbl-cust-pct").textContent = `${custPct}%`;
+                document.getElementById("lbl-sales-pct").textContent = `${salesPct}%`;
+                document.getElementById("bar-cust").style.width = `${custPct}%`;
+                document.getElementById("bar-sales").style.width = `${salesPct}%`;
+            }, 1000);
+        }
+
+        function onCustomerInputDebounced() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const text = document.getElementById("cust-utterance").value.trim();
+                if (text.length > 2) {
+                    analyzeUtterance(text);
+                }
+            }, 80);
+        }
+
+        function triggerPreset(text) {
+            document.getElementById("cust-utterance").value = text;
+            analyzeUtterance(text);
+        }
+
+        async function analyzeUtterance(text) {
+            const key = localStorage.getItem("typesafe_key") || "";
+            const t0 = performance.now();
+
+            try {
+                const resp = await fetch("/api/analyze", {
+                    method: "POST",
+                    headers: {"Content-Type": "application/json"},
+                    body: JSON.stringify({
+                        speaker: "customer",
+                        utterance: text,
+                        api_key: key || null
+                    })
+                });
+                const data = await resp.json();
+                const totalLatency = Math.round(performance.now() - t0);
+
+                // Update Teleprompter HUD
+                document.getElementById("hud-timestamp").textContent = `LIVE TURN // ${data.timestamp}`;
+                document.getElementById("telemetry-latency").textContent = `RADAR LATENCY: ${data.telemetry.latency_ms}ms (RTT: ${totalLatency}ms)`;
+                document.getElementById("emotion-tag").textContent = data.detected_emotion.toUpperCase();
+                document.getElementById("hud-subtext").textContent = `"${data.unspoken_subtext}"`;
+                document.getElementById("hud-trajectory").textContent = data.expected_next_say;
+                document.getElementById("hud-book").textContent = data.book_source.toUpperCase();
+                document.getElementById("hud-framework").textContent = data.recommended_framework;
+                document.getElementById("hud-script").textContent = `"${data.exact_script_to_say}"`;
+                document.getElementById("hud-followup").textContent = `"${data.secondary_followup}"`;
+                document.getElementById("hud-tone").textContent = data.delivery_tone;
+                document.getElementById("hud-principle").textContent = data.psychological_principle;
+                document.getElementById("hud-meta").textContent = `${data.confidence_pct.toFixed(1)}% Match // ${data.telemetry.model} (${data.telemetry.decision_node})`;
+            } catch (e) {
+                console.error("Analysis failed:", e);
+            }
+        }
+
+        function copyTeleprompterScript() {
+            const text = document.getElementById("hud-script").textContent.replace(/^"|"$/g, '');
+            navigator.clipboard.writeText(text);
+            showToast("Script copied to clipboard!");
+        }
+
+        async function fetchPlaybooks() {
+            try {
+                const resp = await fetch("/api/playbooks");
+                const cards = await resp.json();
+                const container = document.getElementById("library-cards-container");
+                container.innerHTML = "";
+                cards.forEach(c => {
+                    const div = document.createElement("div");
+                    div.style.background = "var(--surface-elevated)";
+                    div.style.border = "1px solid var(--border)";
+                    div.style.padding = "10px 14px";
+                    div.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; font-weight: 700; color: var(--accent-orange);">
+                            <span>${c.author_and_book}</span>
+                            <span style="font-size: 10px; color: var(--text-dim);">[${c.category}]</span>
+                        </div>
+                        <div style="font-size: 11px; font-weight: 700; margin: 4px 0;">${c.framework_name}</div>
+                        <div style="font-size: 11px; color: var(--text-mid); background: #090B0E; padding: 6px 10px; border-left: 3px solid var(--accent-orange); margin: 6px 0;">
+                            "${c.exact_script}"
+                        </div>
+                    `;
+                    container.appendChild(div);
+                });
+            } catch(e) {}
+        }
+
+        function openLibraryModal() {
+            document.getElementById("library-modal").classList.add("active");
+        }
+        function closeLibraryModal() {
+            document.getElementById("library-modal").classList.remove("active");
+        }
+
+        function openKeyModal() {
+            document.getElementById("api-key-input").value = localStorage.getItem("typesafe_key") || "";
+            document.getElementById("key-modal").classList.add("active");
+        }
+        function closeKeyModal() {
+            document.getElementById("key-modal").classList.remove("active");
+        }
+
+        async function saveApiKey() {
+            const key = document.getElementById("api-key-input").value.trim();
+            localStorage.setItem("typesafe_key", key);
+            closeKeyModal();
+            showToast("API key saved locally in browser.");
+            testLiveJevConnection();
+        }
+
+        async function testLiveJevConnection() {
+            const key = localStorage.getItem("typesafe_key") || "";
+            const resp = await fetch("/api/test_key", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({api_key: key})
+            });
+            const data = await resp.json();
+            if (data.status === "success") {
+                showToast(data.message);
+                document.getElementById("telemetry-latency").textContent = `JEV GATEWAY: ${data.latency_ms}ms (ONLINE)`;
+            } else {
+                alert("Jev Connection: " + data.message);
+            }
+        }
+    </script>
+</body>
+</html>
