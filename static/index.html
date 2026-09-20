@@ -3,63 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JEV Sales Radar // Real-Time Live Teleprompter</title>
+    <title>JEV Sales Radar // Apple Pro Teleprompter</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg: #06070B;
-            --surface: #0C0E16;
-            --surface-elevated: #111420;
-            --surface-glass: rgba(12, 14, 22, 0.72);
-            --surface-highlight: rgba(255, 255, 255, 0.03);
+            /* Apple Pro Dark Palette */
+            --bg: #000000;
+            --surface-primary: #121214;
+            --surface-secondary: #1C1C1E;
+            --surface-tertiary: #2C2C2E;
+            --surface-glass: rgba(28, 28, 30, 0.65);
             
-            --border: rgba(255, 255, 255, 0.08);
-            --border-subtle: rgba(255, 255, 255, 0.05);
-            --border-hover: rgba(255, 255, 255, 0.18);
+            /* Apple Specular Borders & Separators */
+            --border-hairline: rgba(255, 255, 255, 0.1);
+            --border-subtle: rgba(255, 255, 255, 0.06);
+            --border-hover: rgba(255, 255, 255, 0.2);
+            --specular-highlight: inset 0 1px 0 rgba(255, 255, 255, 0.12);
             
-            --indigo-accent: #6366F1;
-            --indigo-glow: rgba(99, 102, 241, 0.25);
-            --violet-accent: #8B5CF6;
-            --violet-glow: rgba(139, 92, 246, 0.2);
+            /* Apple System Accents (Refined, Non-Neon) */
+            --apple-blue: #0071E3;
+            --apple-blue-subtle: rgba(0, 113, 227, 0.15);
+            --apple-red: #FF453A;
+            --apple-red-subtle: rgba(255, 69, 58, 0.12);
+            --apple-green: #30D158;
+            --apple-green-subtle: rgba(48, 209, 88, 0.12);
+            --apple-amber: #FF9F0A;
+            --apple-amber-subtle: rgba(255, 159, 10, 0.12);
             
-            --crimson: #F43F5E;
-            --crimson-glow: rgba(244, 63, 94, 0.25);
-            --crimson-dim: rgba(244, 63, 94, 0.08);
+            /* Apple Pro Typography Hierarchy */
+            --text-primary: #F5F5F7;
+            --text-secondary: #86868B;
+            --text-tertiary: #515154;
             
-            --emerald: #10B981;
-            --emerald-glow: rgba(16, 185, 129, 0.25);
-            --emerald-dim: rgba(16, 185, 129, 0.08);
+            --font-system: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Inter", sans-serif;
+            --font-mono: "SF Mono", Menlo, Monaco, "JetBrains Mono", monospace;
             
-            --amber: #F59E0B;
-            --amber-dim: rgba(245, 158, 11, 0.1);
+            --radius-outer: 20px;
+            --radius-inner: 14px;
+            --radius-pill: 9999px;
             
-            --text-high: #F9FAFB;
-            --text-mid: #9CA3AF;
-            --text-dim: #6B7280;
-            
-            --font-display: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, sans-serif;
-            --font-mono: "JetBrains Mono", monospace;
-            
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --transition-apple: all 0.25s cubic-bezier(0.25, 1, 0.5, 1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
             background-color: var(--bg);
-            background-image: 
-                radial-gradient(circle at 50% -10%, rgba(99, 102, 241, 0.14) 0%, rgba(6, 7, 11, 0) 65%),
-                radial-gradient(circle at 10% 30%, rgba(139, 92, 246, 0.05) 0%, transparent 40%),
-                radial-gradient(circle at 90% 70%, rgba(6, 182, 212, 0.04) 0%, transparent 40%),
-                linear-gradient(to right, rgba(255, 255, 255, 0.015) 1px, transparent 1px),
-                linear-gradient(to bottom, rgba(255, 255, 255, 0.015) 1px, transparent 1px);
-            background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px, 36px 36px;
-            color: var(--text-high);
-            font-family: var(--font-display);
+            color: var(--text-primary);
+            font-family: var(--font-system);
             font-size: 13.5px;
             line-height: 1.5;
             min-height: 100vh;
@@ -67,8 +62,8 @@
             overflow-x: hidden;
         }
 
-        .app-container {
-            max-width: 1400px;
+        .app-layout {
+            max-width: 1360px;
             margin: 0 auto;
             padding: 24px 28px;
             display: flex;
@@ -76,403 +71,346 @@
             min-height: 100vh;
         }
 
-        /* ELEVENLABS SLEEK HEADER */
-        .eleven-header {
+        /* APPLE PRO FLOATING NAVIGATION BAR */
+        .apple-navbar {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: var(--surface-glass);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 12px 22px;
-            margin-bottom: 22px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(40px) saturate(180%);
+            -webkit-backdrop-filter: blur(40px) saturate(180%);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-outer);
+            padding: 14px 24px;
+            margin-bottom: 24px;
+            box-shadow: var(--specular-highlight), 0 8px 32px rgba(0, 0, 0, 0.5);
         }
-        .brand-cluster {
+        .apple-brand {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        .brand-badge {
+        .apple-logo-badge {
+            background: #FFFFFF;
+            color: #000000;
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
-            color: #FFFFFF;
-            padding: 4px 10px;
-            border-radius: 9999px;
-            font-size: 11px;
+            justify-content: center;
             font-weight: 800;
-            letter-spacing: 0.04em;
-            box-shadow: 0 2px 8px var(--indigo-glow);
+            font-size: 13px;
+            letter-spacing: -0.02em;
         }
-        .brand-title {
+        .apple-product-title {
             font-size: 15px;
-            font-weight: 700;
+            font-weight: 600;
             letter-spacing: -0.015em;
-            color: #FFFFFF;
+            color: var(--text-primary);
         }
-        .brand-tag {
-            color: var(--text-dim);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 500;
+        .apple-product-subtitle {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 400;
+            margin-left: 2px;
         }
 
-        .telemetry-cluster {
+        .apple-status-cluster {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
-        .status-pill {
+        .apple-pill-badge {
             display: inline-flex;
             align-items: center;
             gap: 7px;
-            background: rgba(16, 185, 129, 0.08);
-            color: var(--emerald);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-weight: 600;
-            font-family: var(--font-mono);
-            letter-spacing: 0.02em;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            padding: 5px 14px;
+            border-radius: var(--radius-pill);
+            font-size: 11.5px;
+            font-weight: 500;
+            color: var(--text-secondary);
         }
-        .pulse-dot {
+        .apple-dot-green {
             width: 6px;
             height: 6px;
             border-radius: 50%;
-            background: var(--emerald);
-            animation: pulse-emerald 1.8s infinite;
+            background: var(--apple-green);
         }
-        @keyframes pulse-emerald {
-            0% { transform: scale(0.9); opacity: 0.6; }
-            50% { transform: scale(1.4); opacity: 1; box-shadow: 0 0 8px var(--emerald); }
-            100% { transform: scale(0.9); opacity: 0.6; }
+        .apple-pill-highlight {
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
-        .asr-source-pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(255, 255, 255, 0.04);
-            color: var(--text-mid);
-            border: 1px solid var(--border-subtle);
-            padding: 4px 12px;
-            border-radius: 9999px;
-            font-size: 11px;
-            font-family: var(--font-mono);
-        }
-
-        /* HERO TWO-WAY CHANNEL COCKPIT */
-        .cockpit-wrapper {
-            margin-bottom: 22px;
-        }
-        .cockpit-header {
+        /* SECTION HEADER */
+        .section-headline {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: baseline;
             margin-bottom: 12px;
             padding: 0 4px;
         }
-        .cockpit-title {
-            font-size: 11.5px;
-            font-weight: 700;
+        .section-title {
+            font-size: 12px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
         }
-        .cockpit-status {
-            font-family: var(--font-mono);
-            font-size: 11.5px;
-            font-weight: 700;
-            color: var(--emerald);
-            letter-spacing: 0.03em;
+        .channel-state-text {
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--apple-green);
         }
 
-        .two-buttons-grid {
+        /* HERO TWO-WAY CHANNEL: APPLE CONTROL CENTER TILES */
+        .channel-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
+            margin-bottom: 18px;
         }
 
-        /* ELEVENLABS DOUBLE-BEZEL TACTILE BUTTONS */
-        .eleven-hero-btn {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+        .apple-card-tile {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-outer);
             padding: 24px 26px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 20px;
-            transition: all 0.25s var(--ease-out-expo);
+            transition: var(--transition-apple);
             position: relative;
             user-select: none;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 4px 16px rgba(0, 0, 0, 0.25);
+            box-shadow: var(--specular-highlight), 0 4px 16px rgba(0, 0, 0, 0.2);
         }
-        .eleven-hero-btn:hover {
-            transform: translateY(-2px);
+        .apple-card-tile:hover {
+            background: #18181B;
             border-color: var(--border-hover);
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 8px 24px rgba(0, 0, 0, 0.35);
+            transform: translateY(-1px);
         }
-        .btn-icon-wrapper {
+        .apple-card-tile:active {
+            transform: scale(0.99);
+        }
+
+        .tile-icon-frame {
             width: 52px;
             height: 52px;
             border-radius: 14px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 24px;
+            font-size: 22px;
             flex-shrink: 0;
-            transition: all 0.2s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-subtle);
+            transition: var(--transition-apple);
         }
-        .btn-text-content {
+        .tile-body {
             flex-grow: 1;
         }
-        .btn-title-row {
+        .tile-title-row {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 4px;
         }
-        .btn-title {
-            font-size: 17px;
-            font-weight: 700;
-            letter-spacing: -0.01em;
-            color: var(--text-high);
+        .tile-title {
+            font-size: 16.5px;
+            font-weight: 600;
+            letter-spacing: -0.015em;
+            color: var(--text-primary);
         }
-        .btn-sub {
-            font-size: 12px;
-            color: var(--text-mid);
+        .tile-desc {
+            font-size: 12.5px;
+            color: var(--text-secondary);
             line-height: 1.45;
         }
-        .btn-live-pill {
+        .tile-badge {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            font-family: var(--font-mono);
-            font-size: 10.5px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            padding: 3px 10px;
-            border-radius: 9999px;
-            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.06);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            transition: var(--transition-apple);
         }
 
-        /* CLIENT BUTTON THEME */
-        .btn-client .btn-icon-wrapper {
-            background: var(--crimson-dim);
-            border: 1px solid rgba(244, 63, 94, 0.2);
+        /* ACTIVE STATES (CLEAN APPLE TINTS, ZERO NEON) */
+        .tile-client.active {
+            background: #1A1416;
+            border-color: rgba(255, 69, 58, 0.4);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px rgba(255, 69, 58, 0.15);
         }
-        .btn-client .btn-live-pill {
-            background: rgba(244, 63, 94, 0.1);
-            color: #FDA4AF;
-            border: 1px solid rgba(244, 63, 94, 0.25);
-        }
-        .btn-client.active {
-            background: linear-gradient(135deg, rgba(244, 63, 94, 0.12) 0%, rgba(12, 14, 22, 0.9) 100%);
-            border-color: var(--crimson);
-            box-shadow: 0 0 32px var(--crimson-glow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
-        .btn-client.active .btn-icon-wrapper {
-            background: var(--crimson);
-            box-shadow: 0 0 16px var(--crimson-glow);
-        }
-        .btn-client.active .btn-live-pill {
-            background: var(--crimson);
+        .tile-client.active .tile-icon-frame {
+            background: var(--apple-red);
             color: #FFFFFF;
-            border-color: var(--crimson);
-            animation: pulse-red-pill 1.2s infinite;
+            border-color: var(--apple-red);
+        }
+        .tile-client.active .tile-badge {
+            background: var(--apple-red);
+            color: #FFFFFF;
+            border-color: var(--apple-red);
         }
 
-        /* SALESPERSON BUTTON THEME */
-        .btn-sales .btn-icon-wrapper {
-            background: var(--emerald-dim);
-            border: 1px solid rgba(16, 185, 129, 0.2);
+        .tile-sales.active {
+            background: #121915;
+            border-color: rgba(48, 209, 88, 0.4);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15), 0 8px 24px rgba(48, 209, 88, 0.15);
         }
-        .btn-sales .btn-live-pill {
-            background: rgba(16, 185, 129, 0.1);
-            color: #A7F3D0;
-            border: 1px solid rgba(16, 185, 129, 0.25);
-        }
-        .btn-sales.active {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(12, 14, 22, 0.9) 100%);
-            border-color: var(--emerald);
-            box-shadow: 0 0 32px var(--emerald-glow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
-        }
-        .btn-sales.active .btn-icon-wrapper {
-            background: var(--emerald);
-            box-shadow: 0 0 16px var(--emerald-glow);
-        }
-        .btn-sales.active .btn-live-pill {
-            background: var(--emerald);
+        .tile-sales.active .tile-icon-frame {
+            background: var(--apple-green);
             color: #000000;
-            border-color: var(--emerald);
-            animation: pulse-green-pill 1.2s infinite;
+            border-color: var(--apple-green);
+        }
+        .tile-sales.active .tile-badge {
+            background: var(--apple-green);
+            color: #000000;
+            border-color: var(--apple-green);
         }
 
-        @keyframes pulse-red-pill {
-            0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.5); }
-            70% { box-shadow: 0 0 0 8px rgba(244, 63, 94, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
-        }
-        @keyframes pulse-green-pill {
-            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
-            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
-        }
-
-        /* ELEVENLABS AUDIO WAVE & REAL-TIME SPEECH STREAM STRIP */
-        .eleven-stream-card {
-            margin-top: 16px;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 18px;
+        /* APPLE SOUND / LIVE SPEECH STRIP */
+        .apple-audio-strip {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-outer);
             padding: 18px 24px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
-            transition: border-color 0.3s ease;
+            margin-bottom: 24px;
+            box-shadow: var(--specular-highlight);
+            transition: border-color 0.25s ease;
         }
-        .eleven-stream-card.active-red {
-            border-color: rgba(244, 63, 94, 0.4);
-        }
-        .eleven-stream-card.active-green {
-            border-color: rgba(16, 185, 129, 0.4);
-        }
-
-        .stream-meta-row {
+        .strip-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
-            padding-bottom: 8px;
+            padding-bottom: 10px;
             border-bottom: 1px solid var(--border-subtle);
         }
-        .stream-source-badge {
+        .strip-source-label {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            color: var(--text-dim);
+            font-size: 11.5px;
+            font-weight: 600;
+            letter-spacing: 0.04em;
+            color: var(--text-secondary);
             text-transform: uppercase;
         }
-        .stream-live-indicator {
-            width: 7px;
-            height: 7px;
+        .live-pulse-dot {
+            width: 6px;
+            height: 6px;
             border-radius: 50%;
-            background: var(--emerald);
-            animation: pulse-emerald 1.5s infinite;
+            background: var(--apple-green);
         }
 
-        /* ELEVENLABS DYNAMIC WAVEFORM */
-        .eleven-wave-bars {
+        /* CLEAN APPLE WAVEFORM BARS */
+        .apple-waveforms {
             display: flex;
             align-items: center;
-            gap: 3px;
-            height: 22px;
+            gap: 3.5px;
+            height: 20px;
         }
-        .wave-bar {
+        .wave-capsule {
             width: 3px;
             height: 4px;
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba(255, 255, 255, 0.18);
             border-radius: 9999px;
-            transition: height 0.07s ease, background-color 0.15s ease;
+            transition: height 0.08s ease, background-color 0.15s ease;
         }
-        .active-red .wave-bar {
-            background: linear-gradient(to top, #F43F5E, #FB7185);
+        .active-client .wave-capsule {
+            background: var(--apple-red);
         }
-        .active-green .wave-bar {
-            background: linear-gradient(to top, #10B981, #34D399);
+        .active-sales .wave-capsule {
+            background: var(--apple-green);
         }
 
-        .stream-text-area {
+        .speech-quote-container {
             font-size: 17px;
-            font-weight: 600;
+            font-weight: 500;
             line-height: 1.55;
-            color: var(--text-high);
+            color: var(--text-primary);
             min-height: 44px;
             display: flex;
             align-items: center;
             word-break: break-word;
         }
-        .stream-quote {
-            color: var(--indigo-accent);
-            font-size: 24px;
-            font-weight: 800;
+        .speech-quote-mark {
+            color: var(--text-secondary);
+            font-size: 22px;
+            font-weight: 600;
             margin-right: 6px;
-            line-height: 1;
         }
-        .stream-cursor {
-            color: var(--indigo-accent);
-            font-weight: 800;
-            animation: cursor-blink 0.8s infinite;
-            margin-left: 3px;
+        .apple-cursor {
+            color: var(--text-secondary);
+            font-weight: 600;
+            animation: apple-blink 0.9s infinite;
+            margin-left: 4px;
         }
-        @keyframes cursor-blink {
+        @keyframes apple-blink {
             0%, 49% { opacity: 1; }
             50%, 100% { opacity: 0; }
         }
 
-        /* PACING BAR TRACKER */
-        .pacing-row {
+        /* TALK-TO-LISTEN BALANCE TRACKER */
+        .apple-balance-bar {
             display: flex;
             align-items: center;
             gap: 16px;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            color: var(--text-dim);
+            font-size: 11.5px;
+            color: var(--text-secondary);
             margin-top: 14px;
             padding-top: 12px;
             border-top: 1px solid var(--border-subtle);
         }
-        .pacing-track {
+        .balance-track {
             flex-grow: 1;
-            height: 6px;
-            background: rgba(255, 255, 255, 0.04);
+            height: 5px;
+            background: rgba(255, 255, 255, 0.08);
             border-radius: 9999px;
             overflow: hidden;
             display: flex;
-            border: 1px solid var(--border-subtle);
         }
-        .pacing-fill-client {
+        .balance-fill-client {
             height: 100%;
-            background: linear-gradient(90deg, #F43F5E, #E11D48);
+            background: var(--apple-red);
             width: 50%;
             transition: width 0.3s ease;
         }
-        .pacing-fill-sales {
+        .balance-fill-sales {
             height: 100%;
-            background: linear-gradient(90deg, #10B981, #059669);
+            background: var(--apple-green);
             width: 50%;
             transition: width 0.3s ease;
         }
 
-        /* MAIN TELEPROMPTER BENTO GRID */
-        .teleprompter-bento {
+        /* APPLE PRO BENTO GRID (CLEAN HARDWARE CONTAINERS) */
+        .apple-bento-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 16px;
             flex-grow: 1;
         }
 
-        .bento-card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
+        .apple-bento-box {
+            background: var(--surface-primary);
+            border: 1px solid var(--border-hairline);
+            border-radius: var(--radius-outer);
             padding: 22px 24px;
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 4px 20px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s var(--ease-out-expo);
+            box-shadow: var(--specular-highlight), 0 4px 16px rgba(0, 0, 0, 0.2);
+            transition: var(--transition-apple);
         }
-        .bento-header {
+        .bento-head-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -480,216 +418,195 @@
             padding-bottom: 12px;
             border-bottom: 1px solid var(--border-subtle);
         }
-        .bento-eyebrow {
-            font-size: 11px;
-            font-weight: 700;
+        .bento-title {
+            font-size: 11.5px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-dim);
-            font-family: var(--font-mono);
+            letter-spacing: 0.06em;
+            color: var(--text-secondary);
             display: flex;
             align-items: center;
             gap: 8px;
         }
-        .bento-tag {
-            font-family: var(--font-mono);
-            font-size: 10.5px;
-            font-weight: 700;
-            padding: 2px 8px;
-            border-radius: 9999px;
-            letter-spacing: 0.03em;
+        .bento-chip {
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 10px;
+            border-radius: var(--radius-pill);
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
         }
 
-        /* CARD 1: STATE OF BEING */
-        .state-highlight-pill {
+        /* STATE OF BEING CARD */
+        .state-tag-pill {
             display: inline-block;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            color: var(--text-mid);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid var(--border-hairline);
+            color: var(--text-primary);
             padding: 5px 12px;
             border-radius: 8px;
-            font-size: 11.5px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-            margin-bottom: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            margin-bottom: 12px;
             align-self: flex-start;
         }
-        .inner-thought-bubble {
-            background: var(--surface-elevated);
-            border-left: 3px solid rgba(255, 255, 255, 0.12);
-            border-radius: 0 12px 12px 0;
+        .subconscious-quote-card {
+            background: var(--surface-secondary);
+            border-radius: var(--radius-inner);
             padding: 16px 18px;
-            font-size: 14.5px;
+            font-size: 14px;
             line-height: 1.55;
-            color: var(--text-dim);
+            color: var(--text-secondary);
             font-style: italic;
             margin-bottom: 12px;
-            transition: all 0.25s ease;
+            border: 1px solid var(--border-subtle);
+            transition: color 0.25s ease;
         }
-        .subtext-footnote {
-            font-size: 11.5px;
-            color: var(--text-dim);
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        .apple-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
         }
 
-        /* CARD 2: JEV FAST-FORWARD TRAJECTORY */
-        .trajectory-pill {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid var(--border);
-            color: var(--text-mid);
-            padding: 5px 12px;
-            border-radius: 8px;
-            font-size: 11.5px;
-            font-weight: 700;
-            letter-spacing: 0.04em;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-            margin-bottom: 14px;
-            align-self: flex-start;
-        }
-        .prediction-bubble {
-            background: var(--surface-elevated);
-            border-left: 3px solid rgba(255, 255, 255, 0.12);
-            border-radius: 0 12px 12px 0;
+        /* PREDICTION TRAJECTORY CARD */
+        .prediction-quote-card {
+            background: var(--surface-secondary);
+            border-radius: var(--radius-inner);
             padding: 16px 18px;
-            font-size: 14.5px;
+            font-size: 14px;
             line-height: 1.55;
-            color: var(--text-dim);
+            color: var(--text-secondary);
             margin-bottom: 12px;
-            transition: all 0.25s ease;
+            border: 1px solid var(--border-subtle);
+            transition: color 0.25s ease;
         }
 
-        /* CARD 3: HERO CLOSING SCRIPT (FULL-WIDTH SPAN) */
-        .bento-hero-script {
+        /* HERO TELEPROMPTER SCRIPT CARD (FULL-WIDTH SPAN) */
+        .apple-hero-script-card {
             grid-column: span 2;
-            background: linear-gradient(180deg, #0E111B 0%, #090B12 100%);
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            background: var(--surface-secondary);
+            border: 1px solid var(--border-hairline);
             border-radius: 22px;
             padding: 26px 30px;
-            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 8px 32px rgba(0, 0, 0, 0.35);
-            transition: all 0.3s var(--ease-out-expo);
+            box-shadow: var(--specular-highlight), 0 8px 32px rgba(0, 0, 0, 0.35);
+            transition: var(--transition-apple);
         }
-        .bento-hero-script.active-prompt {
-            border-color: var(--indigo-accent);
-            box-shadow: 0 0 35px var(--indigo-glow), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        .apple-hero-script-card.active-prompt {
+            border-color: rgba(255, 255, 255, 0.35);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 8px 32px rgba(0, 0, 0, 0.5);
         }
-        .script-text-block {
+        .script-hero-display {
             font-size: 21px;
-            font-weight: 700;
+            font-weight: 600;
             line-height: 1.5;
-            color: var(--text-dim);
-            letter-spacing: -0.01em;
+            color: var(--text-secondary);
+            letter-spacing: -0.015em;
             margin-bottom: 22px;
             transition: color 0.25s ease;
         }
-        .script-text-block.live-loaded {
+        .script-hero-display.loaded {
             color: #FFFFFF;
         }
 
-        .script-actions-bar {
+        .script-controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid var(--border-subtle);
             padding-top: 16px;
         }
-        .eleven-pill-btn {
+        .apple-solid-btn {
             background: #FFFFFF;
             color: #000000;
             border: none;
             padding: 9px 20px;
-            border-radius: 9999px;
-            font-family: var(--font-display);
+            border-radius: var(--radius-pill);
+            font-family: var(--font-system);
             font-size: 12.5px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 10px rgba(255, 255, 255, 0.2);
+            transition: var(--transition-apple);
         }
-        .eleven-pill-btn:hover {
+        .apple-solid-btn:hover {
+            background: #E5E5EA;
             transform: translateY(-1px);
-            box-shadow: 0 4px 16px rgba(255, 255, 255, 0.35);
         }
-        .eleven-ghost-btn {
-            background: rgba(255, 255, 255, 0.04);
-            border: 1px solid var(--border);
-            color: var(--text-mid);
+        .apple-solid-btn:active {
+            transform: scale(0.98);
+        }
+        .apple-ghost-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-hairline);
+            color: var(--text-primary);
             padding: 8px 16px;
-            border-radius: 9999px;
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 600;
+            border-radius: var(--radius-pill);
+            font-size: 12px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.15s ease;
+            transition: var(--transition-apple);
         }
-        .eleven-ghost-btn:hover {
-            color: var(--text-high);
+        .apple-ghost-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
             border-color: var(--border-hover);
-            background: rgba(255, 255, 255, 0.07);
         }
 
-        /* CARD 4: VOCAL CADENCE & SECONDARY FOLLOWUP */
-        .cadence-box {
+        /* VOCAL CADENCE CARD */
+        .cadence-row-apple {
             display: flex;
             gap: 12px;
             align-items: flex-start;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
-        .cadence-icon {
+        .cadence-icon-apple {
             font-size: 18px;
-            color: var(--indigo-accent);
+            color: var(--text-primary);
             flex-shrink: 0;
-            margin-top: 2px;
+            margin-top: 1px;
         }
-        .cadence-text {
+        .cadence-desc {
             font-size: 13.5px;
-            color: var(--text-dim);
-            font-weight: 500;
+            color: var(--text-secondary);
+            font-weight: 400;
             line-height: 1.5;
         }
-        .followup-bubble {
-            background: var(--surface-elevated);
-            border-left: 3px solid rgba(255, 255, 255, 0.12);
-            border-radius: 0 12px 12px 0;
+        .followup-box-apple {
+            background: var(--surface-secondary);
+            border-radius: var(--radius-inner);
             padding: 14px 18px;
             font-size: 13.5px;
-            color: var(--text-dim);
-            margin-top: 8px;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-subtle);
+            margin-top: 6px;
         }
 
-        /* CARD 5: PSYCHOLOGY MECHANISM */
-        .mechanism-body {
+        /* PSYCHOLOGY MECHANISM */
+        .mechanism-content {
             font-size: 13.5px;
             line-height: 1.6;
-            color: var(--text-dim);
+            color: var(--text-secondary);
         }
 
-        /* SLEEK FOOTER TELEMETRY */
-        .eleven-footer {
-            margin-top: 24px;
+        /* APPLE FOOTER */
+        .apple-footer {
+            margin-top: 28px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 11px;
-            color: var(--text-dim);
-            font-family: var(--font-mono);
-            padding: 14px 4px;
+            font-size: 11.5px;
+            color: var(--text-tertiary);
+            padding: 16px 4px;
             border-top: 1px solid var(--border-subtle);
         }
 
         @media (max-width: 960px) {
-            .two-buttons-grid, .teleprompter-bento {
+            .channel-grid, .apple-bento-grid {
                 grid-template-columns: 1fr;
             }
-            .bento-hero-script {
+            .apple-hero-script-card {
                 grid-column: span 1;
             }
         }
@@ -697,198 +614,203 @@
 </head>
 <body>
 
-<div class="app-container">
-    <!-- ELEVENLABS SLEEK FLOATING HEADER -->
-    <header class="eleven-header">
-        <div class="brand-cluster">
-            <div class="brand-badge">⚡ JEV</div>
-            <span class="brand-title">SALES RADAR</span>
-            <span class="brand-tag">// REAL-TIME VOICE TELEPROMPTER</span>
+<div class="app-layout">
+    <!-- APPLE PRO CLEAN FLOATING HEADER -->
+    <header class="apple-navbar">
+        <div class="apple-brand">
+            <div class="apple-logo-badge">⚡</div>
+            <div>
+                <span class="apple-product-title">JEV Sales Radar</span>
+                <span class="apple-product-subtitle">// Real-Time Teleprompter</span>
+            </div>
         </div>
-        <div class="telemetry-cluster">
-            <span class="status-pill"><span class="pulse-dot"></span> <span id="radarLatencyBadge">RADAR: &lt;1ms SIMD</span></span>
-            <span class="asr-source-pill" id="asrSourceBadge">ASR: LOCAL WHISPER (8994)</span>
+        <div class="apple-status-cluster">
+            <span class="apple-pill-badge">
+                <span class="apple-dot-green"></span>
+                <span id="radarLatencyBadge"><span class="apple-pill-highlight">SIMD RAG</span> &lt;1ms</span>
+            </span>
+            <span class="apple-pill-badge" id="asrSourceBadge">Local Whisper (8994)</span>
         </div>
     </header>
 
-    <!-- CORE TWO-WAY CHANNEL COCKPIT (STRICTLY TWO BUTTONS) -->
-    <section class="cockpit-wrapper">
-        <div class="cockpit-header">
-            <span class="cockpit-title">// TWO-WAY VOICE CHANNEL</span>
-            <span class="cockpit-status" id="activeChannelStatus">STANDBY // CLICK A MIC TO BEGIN</span>
+    <!-- TWO-WAY CHANNEL HERO SECTION (STRICTLY TWO BUTTONS) -->
+    <section>
+        <div class="section-headline">
+            <span class="section-title">Two-Way Live Voice Channel</span>
+            <span class="channel-state-text" id="activeChannelStatus">Ready · Click a mic to begin</span>
         </div>
 
-        <div class="two-buttons-grid">
-            <!-- HERO BUTTON 1: CLIENT TALKING -->
-            <div class="eleven-hero-btn btn-client" id="btnClient" onclick="toggleClientMic()">
-                <div class="btn-icon-wrapper">🗣️</div>
-                <div class="btn-text-content">
-                    <div class="btn-title-row">
-                        <span class="btn-title">CLIENT TALKING</span>
-                        <span class="btn-live-pill" id="clientPill">CLICK TO TRANSCRIBE</span>
+        <div class="channel-grid">
+            <!-- TILE 1: CLIENT TALKING -->
+            <div class="apple-card-tile tile-client" id="btnClient" onclick="toggleClientMic()">
+                <div class="tile-icon-frame">🗣️</div>
+                <div class="tile-body">
+                    <div class="tile-title-row">
+                        <span class="tile-title">Client Talking</span>
+                        <span class="tile-badge" id="clientPill">Click to Transcribe</span>
                     </div>
-                    <div class="btn-sub">Transcribes prospect voice live with local Whisper and queries sales psychology RAG in &lt;1ms.</div>
+                    <div class="tile-desc">Transcribes prospect voice live with local Whisper and queries sales psychology battlecards in &lt;1ms.</div>
                 </div>
             </div>
 
-            <!-- HERO BUTTON 2: SALESPERSON TALKING -->
-            <div class="eleven-hero-btn btn-sales" id="btnSales" onclick="toggleSalesMic()">
-                <div class="btn-icon-wrapper">🎧</div>
-                <div class="btn-text-content">
-                    <div class="btn-title-row">
-                        <span class="btn-title">SALESPERSON TALKING</span>
-                        <span class="btn-live-pill" id="salesPill">CLICK TO TRANSCRIBE</span>
+            <!-- TILE 2: SALESPERSON TALKING -->
+            <div class="apple-card-tile tile-sales" id="btnSales" onclick="toggleSalesMic()">
+                <div class="tile-icon-frame">🎧</div>
+                <div class="tile-body">
+                    <div class="tile-title-row">
+                        <span class="tile-title">Salesperson Talking</span>
+                        <span class="tile-badge" id="salesPill">Click to Transcribe</span>
                     </div>
-                    <div class="btn-sub">Tracks speech pace, monitors talk-to-listen balance, and coaches cadence delivery.</div>
+                    <div class="tile-desc">Tracks speech pace, monitors talk-to-listen balance, and coaches cadence delivery.</div>
                 </div>
             </div>
         </div>
 
-        <!-- ELEVENLABS AUDIO WAVE & REAL-TIME SPEECH STREAM STRIP -->
-        <div class="eleven-stream-card" id="elevenStreamCard">
-            <div class="stream-meta-row">
-                <div class="stream-source-badge">
-                    <span class="stream-live-indicator"></span>
-                    <span id="streamSpeakerBadge">LIVE SPEECH FEED:</span>
+        <!-- REAL-TIME LIVE SPEECH & WAVEFORM STRIP -->
+        <div class="apple-audio-strip" id="appleAudioStrip">
+            <div class="strip-header">
+                <div class="strip-source-label">
+                    <span class="live-pulse-dot"></span>
+                    <span id="streamSpeakerBadge">Live Audio Stream</span>
                 </div>
-                <div class="eleven-wave-bars" id="waveVisualizer">
-                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
-                    <div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div><div class="wave-bar"></div>
+                <div class="apple-waveforms" id="waveVisualizer">
+                    <div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div>
+                    <div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div>
+                    <div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div>
+                    <div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div>
+                    <div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div>
+                    <div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div><div class="wave-capsule"></div>
                 </div>
-                <div class="stream-source-badge" id="streamSpeedBadge" style="font-size: 10.5px;">
-                    16KHZ AUDIOSTREAM // READY
+                <div class="strip-source-label" id="streamSpeedBadge" style="font-size: 11px; font-weight: 500;">
+                    16 kHz Audio Ready
                 </div>
             </div>
-            <div class="stream-text-area">
-                <span class="stream-quote">“</span>
-                <span id="streamingWordsText" style="color: var(--text-mid);">Speak into your microphone... live transcribed words will appear here continuously in real time.</span>
-                <span class="stream-cursor">▌</span>
+            <div class="speech-quote-container">
+                <span class="speech-quote-mark">“</span>
+                <span id="streamingWordsText" style="color: var(--text-secondary);">Speak into your microphone... live transcribed words will appear here continuously in real time.</span>
+                <span class="apple-cursor">▌</span>
             </div>
-        </div>
 
-        <!-- PACING BALANCE TRACKER -->
-        <div class="pacing-row">
-            <span>CLIENT LISTEN: <strong id="clientPercent" style="color: var(--text-high);">50%</strong></span>
-            <div class="pacing-track">
-                <div class="pacing-fill-client" id="barClient" style="width: 50%;"></div>
-                <div class="pacing-fill-sales" id="barSales" style="width: 50%;"></div>
+            <!-- TALK-TO-LISTEN BALANCE -->
+            <div class="apple-balance-bar">
+                <span>Client: <strong id="clientPercent" style="color: var(--text-primary);">50%</strong></span>
+                <div class="balance-track">
+                    <div class="balance-fill-client" id="barClient" style="width: 50%;"></div>
+                    <div class="balance-fill-sales" id="barSales" style="width: 50%;"></div>
+                </div>
+                <span>Salesperson: <strong id="salesPercent" style="color: var(--text-primary);">50%</strong> (Target: &lt; 40%)</span>
             </div>
-            <span>REP TALK: <strong id="salesPercent" style="color: var(--text-high);">50%</strong> (TARGET: &lt; 40%)</span>
         </div>
     </section>
 
     <!-- MAIN TELEPROMPTER BENTO GRID (ZERO DEMO DATA // CLEAN STANDBY) -->
-    <main class="teleprompter-bento">
-        <!-- BENTO CARD 1: STATE OF BEING -->
-        <div class="bento-card">
-            <div class="bento-header">
-                <div class="bento-eyebrow">
-                    <span>🧠 PROSPECT STATE OF BEING</span>
+    <main class="apple-bento-grid">
+        <!-- BOX 1: STATE OF BEING -->
+        <div class="apple-bento-box">
+            <div class="bento-head-row">
+                <div class="bento-title">
+                    <span>🧠 Prospect State of Being</span>
                 </div>
-                <span class="bento-tag" style="background: rgba(255, 255, 255, 0.05); color: var(--text-dim);" id="categoryTag">STANDBY</span>
+                <span class="bento-chip" id="categoryTag">Standby</span>
             </div>
-            <div class="state-highlight-pill" id="stateOfBeingBadge">
-                AWAITING LIVE PROSPECT VOICE
+            <div class="state-tag-pill" id="stateOfBeingBadge">
+                Awaiting Live Prospect Voice
             </div>
-            <div class="inner-thought-bubble" id="unspokenSubtextText">
+            <div class="subconscious-quote-card" id="unspokenSubtextText">
                 "Start speaking into your microphone. JEV will live-transcribe your speech and diagnose subconscious state of being..."
             </div>
-            <div class="subtext-footnote">
-                💡 Subconscious truth will diagnose automatically as live speech is captured.
+            <div class="apple-hint">
+                Subconscious truth will diagnose automatically as live speech is captured.
             </div>
         </div>
 
-        <!-- BENTO CARD 2: JEV TRAJECTORY PREDICTION -->
-        <div class="bento-card">
-            <div class="bento-header">
-                <div class="bento-eyebrow">
-                    <span>🔮 JEV FAST-FORWARD PREDICTION</span>
+        <!-- BOX 2: JEV TRAJECTORY PREDICTION -->
+        <div class="apple-bento-box">
+            <div class="bento-head-row">
+                <div class="bento-title">
+                    <span>🔮 Fast-Forward Trajectory</span>
                 </div>
-                <span class="bento-tag" style="background: rgba(255, 255, 255, 0.05); color: var(--text-dim);" id="predictConfidenceTag">READY</span>
+                <span class="bento-chip" id="predictConfidenceTag">Ready</span>
             </div>
-            <div class="trajectory-pill">
-                ANTICIPATED NEXT SENTENCE
+            <div class="state-tag-pill">
+                Anticipated Next Sentence
             </div>
-            <div class="prediction-bubble" id="predictionNextSayText">
+            <div class="prediction-quote-card" id="predictionNextSayText">
                 "Anticipated trajectory will generate as soon as live speech is detected..."
             </div>
-            <div class="subtext-footnote">
-                ⚡ Tactical Advantage: Speak the counter-script before they can lock themselves into an exit stance.
+            <div class="apple-hint">
+                Tactical advantage: Speak the counter-script before they lock into an exit stance.
             </div>
         </div>
 
-        <!-- BENTO CARD 3: HERO CLOSING SCRIPT (FULL-WIDTH SPAN) -->
-        <div class="bento-card bento-hero-script" id="heroScriptCard">
-            <div class="bento-header">
-                <div class="bento-eyebrow" style="color: var(--indigo-accent);">
-                    <span>🎯 TELEPROMPTER // EXACT SCRIPT TO CLOSE THEM NOW</span>
+        <!-- BOX 3: HERO CLOSING SCRIPT (FULL-WIDTH SPAN) -->
+        <div class="apple-bento-box apple-hero-script-card" id="heroScriptCard">
+            <div class="bento-head-row">
+                <div class="bento-title" style="color: var(--text-primary);">
+                    <span>🎯 Teleprompter // Closing Script</span>
                 </div>
-                <span class="bento-tag" style="background: rgba(99, 102, 241, 0.15); color: #C7D2FE; border: 1px solid rgba(99, 102, 241, 0.3);" id="bookCitationBadge">
-                    SALES PSYCHOLOGY RAG // STANDBY
+                <span class="bento-chip" style="background: rgba(255, 255, 255, 0.1); color: #FFFFFF;" id="bookCitationBadge">
+                    Sales Psychology RAG · Standby
                 </span>
             </div>
             
-            <div class="script-text-block" id="teleprompterScript">
+            <div class="script-hero-display" id="teleprompterScript">
                 "Live teleprompter script will appear here the moment your prospect begins speaking."
             </div>
 
-            <div class="script-actions-bar">
-                <button class="eleven-pill-btn" onclick="speakTeleprompterScript()">
-                    <span>🔊 HEAR VOCAL CADENCE</span>
+            <div class="script-controls">
+                <button class="apple-solid-btn" onclick="speakTeleprompterScript()">
+                    <span>🔊 Listen Cadence</span>
                 </button>
-                <button class="eleven-ghost-btn" onclick="copyScriptToClipboard()">
-                    [ 📋 COPY SCRIPT ]
+                <button class="apple-ghost-btn" onclick="copyScriptToClipboard()">
+                    Copy Script
                 </button>
             </div>
         </div>
 
-        <!-- BENTO CARD 4: VOCAL CADENCE & SECONDARY FOLLOWUP -->
-        <div class="bento-card">
-            <div class="bento-header">
-                <div class="bento-eyebrow">
-                    <span>🎙️ VOCAL CADENCE & INFLECTION GUIDE</span>
+        <!-- BOX 4: VOCAL CADENCE & SECONDARY FOLLOWUP -->
+        <div class="apple-bento-box">
+            <div class="bento-head-row">
+                <div class="bento-title">
+                    <span>🎙️ Vocal Cadence Guide</span>
                 </div>
-                <span class="bento-tag" style="background: rgba(255, 255, 255, 0.05); color: var(--text-dim);">DELIVERY RULES</span>
+                <span class="bento-chip">Delivery Rules</span>
             </div>
-            <div class="cadence-box">
-                <span class="cadence-icon">📻</span>
-                <div class="cadence-text" id="deliveryToneText">
+            <div class="cadence-row-apple">
+                <span class="cadence-icon-apple">📻</span>
+                <div class="cadence-desc" id="deliveryToneText">
                     Awaiting live voice cadence...
                 </div>
             </div>
-            <div class="subtext-footnote" style="margin-top: 8px;">
-                ♟️ SECONDARY LOCK-IN FOLLOWUP:
+            <div class="apple-hint" style="margin-top: 6px;">
+                Secondary Follow-up Question:
             </div>
-            <div class="followup-bubble" id="secondaryFollowupText">
-                "Followup commitment strategy will generate here..."
+            <div class="followup-box-apple" id="secondaryFollowupText">
+                "Follow-up commitment strategy will generate here..."
             </div>
         </div>
 
-        <!-- BENTO CARD 5: PSYCHOLOGY MECHANISM -->
-        <div class="bento-card">
-            <div class="bento-header">
-                <div class="bento-eyebrow">
-                    <span>📚 PSYCHOLOGY MECHANISM</span>
+        <!-- BOX 5: PSYCHOLOGY MECHANISM -->
+        <div class="apple-bento-box">
+            <div class="bento-head-row">
+                <div class="bento-title">
+                    <span>📚 Psychology Mechanism</span>
                 </div>
-                <span class="bento-tag" style="background: rgba(255, 255, 255, 0.05); color: var(--text-dim);" id="frameworkTag">AWAITING INPUT</span>
+                <span class="bento-chip" id="frameworkTag">Awaiting Input</span>
             </div>
-            <div class="mechanism-body" id="psychologicalPrincipleText">
-                Awaiting live speech input to match to sales psychology battlecards.
+            <div class="mechanism-content" id="psychologicalPrincipleText">
+                Awaiting live speech input to match against 12 core sales psychology battlecards.
             </div>
-            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-dim); font-family: var(--font-mono);" id="telemetryFooterNote">
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--border-subtle); font-size: 11px; color: var(--text-tertiary);" id="telemetryFooterNote">
                 SIMD RAG Engine: Ready to evaluate discrete objection criteria in &lt;1ms.
             </div>
         </div>
     </main>
 
-    <!-- SLEEK FOOTER TELEMETRY -->
-    <footer class="eleven-footer">
-        <div>⚡ JEV SALES RADAR // ELEVENLABS SLEEK ARCHITECTURE</div>
-        <div id="telemetryFooter">ASR: LOCAL WHISPER + BROWSER | SIMD RAG: &lt;1ms | ZERO EXTERNAL APIS</div>
+    <!-- APPLE MINIMALIST FOOTER -->
+    <footer class="apple-footer">
+        <div>⚡ JEV Sales Radar · Apple Pro Hardware Design</div>
+        <div id="telemetryFooter">ASR: Local Whisper + Browser · SIMD RAG: &lt;1ms · Zero Cloud APIs</div>
     </footer>
 </div>
 
@@ -957,23 +879,23 @@
         const pill = document.getElementById("clientPill");
         const status = document.getElementById("activeChannelStatus");
         const badge = document.getElementById("streamSpeakerBadge");
-        const hud = document.getElementById("elevenStreamCard");
+        const strip = document.getElementById("appleAudioStrip");
 
         if (active) {
             btn.classList.add("active");
-            pill.innerText = "● TRANSCRIBING LIVE";
-            status.innerText = "CLIENT SPEAKING // TRANSCRIBING LIVE";
-            status.style.color = "var(--crimson)";
-            badge.innerText = "CLIENT LIVE MIC:";
-            badge.style.color = "var(--crimson)";
-            hud.className = "eleven-stream-card active-red";
+            pill.innerText = "Transcribing Live";
+            status.innerText = "Client Speaking · Live Mic Active";
+            status.style.color = "var(--apple-red)";
+            badge.innerText = "Client Live Audio:";
+            badge.style.color = "var(--apple-red)";
+            strip.className = "apple-audio-strip active-client";
             currentSpeaker = "customer";
         } else {
             btn.classList.remove("active");
-            pill.innerText = "CLICK TO TRANSCRIBE";
-            status.innerText = "STANDBY // READY";
-            status.style.color = "var(--text-dim)";
-            hud.className = "eleven-stream-card";
+            pill.innerText = "Click to Transcribe";
+            status.innerText = "Ready · Click a mic to begin";
+            status.style.color = "var(--apple-green)";
+            strip.className = "apple-audio-strip";
         }
     }
 
@@ -983,27 +905,27 @@
         const pill = document.getElementById("salesPill");
         const status = document.getElementById("activeChannelStatus");
         const badge = document.getElementById("streamSpeakerBadge");
-        const hud = document.getElementById("elevenStreamCard");
+        const strip = document.getElementById("appleAudioStrip");
 
         if (active) {
             btn.classList.add("active");
-            pill.innerText = "● COACH ACTIVE";
-            status.innerText = "SALESPERSON SPEAKING // COACH ACTIVE";
-            status.style.color = "var(--emerald)";
-            badge.innerText = "SALESPERSON LIVE MIC:";
-            badge.style.color = "var(--emerald)";
-            hud.className = "eleven-stream-card active-green";
+            pill.innerText = "Coach Active";
+            status.innerText = "Salesperson Speaking · Cadence Coach Active";
+            status.style.color = "var(--apple-green)";
+            badge.innerText = "Salesperson Live Audio:";
+            badge.style.color = "var(--apple-green)";
+            strip.className = "apple-audio-strip active-sales";
             currentSpeaker = "salesperson";
         } else {
             btn.classList.remove("active");
-            pill.innerText = "CLICK TO TRANSCRIBE";
-            status.innerText = "STANDBY // READY";
-            status.style.color = "var(--text-dim)";
-            hud.className = "eleven-stream-card";
+            pill.innerText = "Click to Transcribe";
+            status.innerText = "Ready · Click a mic to begin";
+            status.style.color = "var(--apple-green)";
+            strip.className = "apple-audio-strip";
         }
     }
 
-    // Eagerly connect to local Whisper streaming WebSocket
+    // Connect to local Whisper streaming WebSocket
     function initWhisperSocket() {
         if (whisperSocket && (whisperSocket.readyState === WebSocket.OPEN || whisperSocket.readyState === WebSocket.CONNECTING)) {
             return;
@@ -1013,7 +935,7 @@
             whisperSocket = new WebSocket(`ws://${host}:8994`);
             whisperSocket.onopen = () => {
                 const badge = document.getElementById("asrSourceBadge");
-                if (badge) badge.innerText = "ASR: LOCAL WHISPER (CONNECTED)";
+                if (badge) badge.innerText = "Local Whisper (Connected)";
             };
             whisperSocket.onmessage = (event) => {
                 try {
@@ -1025,7 +947,7 @@
             };
             whisperSocket.onerror = () => {
                 const badge = document.getElementById("asrSourceBadge");
-                if (badge) badge.innerText = "ASR: BROWSER / LOCAL WHISPER";
+                if (badge) badge.innerText = "Browser / Local Whisper";
             };
             whisperSocket.onclose = () => {
                 setTimeout(initWhisperSocket, 2500);
@@ -1035,7 +957,7 @@
 
     initWhisperSocket();
 
-    // Start Live Transcribing (Dual-path: Local Whisper WebSocket + Browser ASR)
+    // Start Live Transcribing
     async function startLiveTranscribing(speaker) {
         await startLocalWhisperMicStream(speaker);
         startBrowserSpeechRecognition(speaker);
@@ -1057,8 +979,8 @@
             
             if (whisperSocket && whisperSocket.readyState === WebSocket.OPEN) {
                 whisperSocket.send(JSON.stringify({ type: "reset" }));
-                document.getElementById("asrSourceBadge").innerText = "ASR: LOCAL WHISPER (STREAMING)";
-                document.getElementById("streamSpeedBadge").innerText = "MICROPHONE: STREAMING LIVE";
+                document.getElementById("asrSourceBadge").innerText = "Local Whisper (Streaming)";
+                document.getElementById("streamSpeedBadge").innerText = "Microphone Active";
             }
 
             if (!audioContext || audioContext.state === 'closed') {
@@ -1083,9 +1005,9 @@
                 await audioContext.resume();
             }
 
-            // ElevenLabs dynamic wave visualizer
+            // Apple waveform capsules animation
             const dataArray = new Uint8Array(analyser.frequencyBinCount);
-            const bars = document.querySelectorAll(".wave-bar");
+            const bars = document.querySelectorAll(".wave-capsule");
 
             function updateWave() {
                 if (!isClientListening && !isSalesListening) {
@@ -1095,7 +1017,7 @@
                 analyser.getByteFrequencyData(dataArray);
                 for (let i = 0; i < bars.length; i++) {
                     const val = dataArray[i % dataArray.length] || 0;
-                    const h = Math.max(4, Math.min(22, Math.round(val / 9)));
+                    const h = Math.max(4, Math.min(20, Math.round(val / 9)));
                     bars[i].style.height = h + "px";
                 }
                 animFrame = requestAnimationFrame(updateWave);
@@ -1104,11 +1026,11 @@
 
         } catch (err) {
             console.warn("Local mic capture error:", err);
-            document.getElementById("activeChannelStatus").innerText = "MIC PERMISSION REQUIRED // PLEASE ALLOW MIC IN BROWSER";
+            document.getElementById("activeChannelStatus").innerText = "Microphone permission required · Please allow access in browser";
         }
     }
 
-    // Parallel browser speech recognition (zero-latency fast-path)
+    // Parallel browser speech recognition (fallback)
     function startBrowserSpeechRecognition(speaker) {
         window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
         if (!window.SpeechRecognition) return;
@@ -1206,56 +1128,53 @@
     function renderTeleprompterData(data) {
         document.getElementById("heroScriptCard").classList.add("active-prompt");
         const scriptEl = document.getElementById("teleprompterScript");
-        scriptEl.classList.add("live-loaded");
+        scriptEl.classList.add("loaded");
 
-        document.getElementById("categoryTag").innerText = data.detected_emotion || "PRICE_AND_BUDGET";
-        document.getElementById("categoryTag").style.background = "var(--amber-dim)";
-        document.getElementById("categoryTag").style.color = "var(--amber)";
+        document.getElementById("categoryTag").innerText = data.detected_emotion || "PriceAndBudget";
+        document.getElementById("categoryTag").style.background = "var(--apple-amber-subtle)";
+        document.getElementById("categoryTag").style.color = "var(--apple-amber)";
 
-        document.getElementById("stateOfBeingBadge").innerText = data.state_of_being || "EVALUATING // CAUTIOUS";
-        document.getElementById("stateOfBeingBadge").style.background = "var(--amber-dim)";
-        document.getElementById("stateOfBeingBadge").style.color = "var(--amber)";
-        document.getElementById("stateOfBeingBadge").style.borderColor = "rgba(245, 158, 11, 0.4)";
+        document.getElementById("stateOfBeingBadge").innerText = data.state_of_being || "Evaluating · Cautious";
+        document.getElementById("stateOfBeingBadge").style.background = "var(--apple-amber-subtle)";
+        document.getElementById("stateOfBeingBadge").style.color = "var(--apple-amber)";
+        document.getElementById("stateOfBeingBadge").style.borderColor = "rgba(255, 159, 10, 0.35)";
 
         const subtextEl = document.getElementById("unspokenSubtextText");
         subtextEl.innerText = `"${data.unspoken_subtext}"`;
-        subtextEl.style.color = "var(--text-high)";
-        subtextEl.style.borderLeftColor = "var(--amber)";
+        subtextEl.style.color = "var(--text-primary)";
 
-        document.getElementById("predictConfidenceTag").innerText = `CONFIDENCE: ${data.confidence_pct}%`;
-        document.getElementById("predictConfidenceTag").style.background = "rgba(99, 102, 241, 0.15)";
-        document.getElementById("predictConfidenceTag").style.color = "#C7D2FE";
+        document.getElementById("predictConfidenceTag").innerText = `Confidence: ${data.confidence_pct}%`;
+        document.getElementById("predictConfidenceTag").style.background = "rgba(255, 255, 255, 0.08)";
+        document.getElementById("predictConfidenceTag").style.color = "var(--text-primary)";
 
         const predEl = document.getElementById("predictionNextSayText");
         predEl.innerText = `"${data.expected_next_say}"`;
-        predEl.style.color = "#C7D2FE";
-        predEl.style.borderLeftColor = "var(--indigo-accent)";
+        predEl.style.color = "var(--text-primary)";
 
         scriptEl.innerText = `"${data.exact_script_to_say}"`;
-        document.getElementById("bookCitationBadge").innerText = (data.book_source || "CHRIS VOSS").toUpperCase();
-        document.getElementById("bookCitationBadge").style.background = "var(--indigo-accent)";
-        document.getElementById("bookCitationBadge").style.color = "#FFFFFF";
+        document.getElementById("bookCitationBadge").innerText = (data.book_source || "Chris Voss").toUpperCase();
+        document.getElementById("bookCitationBadge").style.background = "#FFFFFF";
+        document.getElementById("bookCitationBadge").style.color = "#000000";
 
         const toneEl = document.getElementById("deliveryToneText");
         toneEl.innerText = data.delivery_tone;
-        toneEl.style.color = "var(--text-high)";
+        toneEl.style.color = "var(--text-primary)";
 
         const followupEl = document.getElementById("secondaryFollowupText");
         followupEl.innerText = `"${data.secondary_followup}"`;
-        followupEl.style.color = "#A7F3D0";
-        followupEl.style.borderLeftColor = "var(--emerald)";
+        followupEl.style.color = "var(--text-primary)";
 
         const mechEl = document.getElementById("psychologicalPrincipleText");
         mechEl.innerText = data.psychological_principle;
-        mechEl.style.color = "var(--text-high)";
+        mechEl.style.color = "var(--text-primary)";
 
-        document.getElementById("frameworkTag").innerText = (data.recommended_framework || "TACTICAL EMPATHY").toUpperCase();
+        document.getElementById("frameworkTag").innerText = (data.recommended_framework || "Tactical Empathy");
         document.getElementById("frameworkTag").style.background = "rgba(255, 255, 255, 0.08)";
-        document.getElementById("frameworkTag").style.color = "var(--text-high)";
+        document.getElementById("frameworkTag").style.color = "var(--text-primary)";
 
         if (data.telemetry) {
-            document.getElementById("radarLatencyBadge").innerText = `RADAR: ${data.telemetry.latency_ms}ms SIMD`;
-            document.getElementById("telemetryFooter").innerText = `SIMD IN-MEMORY RAG: ${data.telemetry.latency_ms}ms | CONFIDENCE: ${data.confidence_pct}% | ZERO EXTERNAL APIS`;
+            document.getElementById("radarLatencyBadge").innerHTML = `<span class="apple-pill-highlight">SIMD RAG</span> ${data.telemetry.latency_ms}ms`;
+            document.getElementById("telemetryFooter").innerText = `SIMD IN-MEMORY RAG: ${data.telemetry.latency_ms}ms · CONFIDENCE: ${data.confidence_pct}% · ZERO EXTERNAL APIS`;
         }
     }
 
