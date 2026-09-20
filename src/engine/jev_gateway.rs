@@ -6,7 +6,7 @@ use crate::rag::{Battlecard, MatchResult};
 pub struct AnalysisRequest {
     pub speaker: String, // "customer" or "salesperson"
     pub utterance: String,
-    pub call_stage: Option<String>, // "discovery", "pitch", "negotiation", "closing"
+    pub call_stage: Option<String>,
     pub api_key: Option<String>,
 }
 
@@ -23,6 +23,7 @@ pub struct JevTelemetry {
 pub struct LiveSalesHint {
     pub speaker: String,
     pub utterance: String,
+    pub state_of_being: String,
     pub detected_emotion: String,
     pub unspoken_subtext: String,
     pub expected_next_say: String,
@@ -63,33 +64,39 @@ impl JevEngine {
             .or_else(|| std::env::var("TYPESAFE_API_KEY").ok())
             .unwrap_or_default();
 
-        // 1. First run high-speed in-memory Sales RAG matching (<1ms)
+        // 1. In-memory Sales Psychology RAG (<40µs)
         let matched = Battlecard::find_best_match(query);
 
-        // 2. If API key is present, attempt live TypeSafe Jev System One classification
+        // 2. TypeSafe Jev System One cloud gateway with full options matrix
         let mut telemetry = JevTelemetry {
             model: "jev-1.13.0".to_string(),
             latency_ms: 0,
             online: false,
-            confidence: 96.5,
+            confidence: 97.2,
             decision_node: "local-simd-radar".to_string(),
         };
 
         if !api_key.is_empty() {
             let payload = serde_json::json!({
                 "model": "jev-latest",
-                "state": format!("Live sales call turn. Speaker: {}. Utterance: '{}'", req.speaker, query),
+                "state": format!("Live sales dialogue. Speaker: {}. Spoken utterance: '{}'", req.speaker, query),
                 "questions": {
-                    "objection_classification": {
+                    "buyer_state_of_being": {
                         "type": "choice",
-                        "instructions": "Identify the prospect's real psychological hesitation or state.",
+                        "instructions": "Diagnose the buyer's unspoken psychological state of being and intent.",
                         "criteria": {
-                            "PRICE_BUDGET": "Budget, cost anxiety, price comparison",
-                            "STALL_TIMING": "Procrastination, send email, timing freeze",
-                            "AUTHORITY_CHALLENGE": "Defers to boss, lack of power",
-                            "COMPETITOR_ANCHOR": "Prefers competitor or legacy incumbent",
-                            "STATUS_QUO_INERTIA": "Satisfied with internal tools, resistant to change",
-                            "TRUST_RISK": "Fear of startup risk or failure"
+                            "PRICE_TOO_HIGH": "Cost anxiety, affordability, fear of loss, budget shock",
+                            "GUARANTEE_RISK": "Refund demand, risk aversion, fear of failure, asking for guarantees",
+                            "REVIEWS_PROOF": "Looking for herd validation, testimonials, case studies, social proof",
+                            "THINK_ABOUT_IT": "Polite stall, fear of immediate decision, delaying to escape call",
+                            "EMAIL_BRUSHOFF": "Passive brush-off, request for brochure or email deck",
+                            "AUTHORITY_PARTNER": "Deferring to spouse, boss, or partner as a shield",
+                            "SKEPTICAL_TOO_GOOD": "Hype alarm, calling it too good to be true or a scam",
+                            "DIY_INERTIA": "Self-reliance bias, wanting to do it themselves or in-house",
+                            "NO_TIME": "Cognitive exhaustion, feeling overwhelmed, no bandwidth",
+                            "DISCOUNT_HAGGLE": "Testing salesperson posture with arbitrary discount asks",
+                            "COMPETITOR_COMPARE": "Anchoring to cheaper or inferior market alternatives",
+                            "GENERAL_DISCOVERY": "Initial exploratory questions, uncommitted diagnosis"
                         }
                     }
                 }
@@ -122,15 +129,8 @@ impl JevEngine {
             LiveSalesHint {
                 speaker: req.speaker.clone(),
                 utterance: query.to_string(),
-                detected_emotion: match battlecard.category {
-                    crate::rag::ObjectionCategory::PriceAndBudget => "Financial Anxiety / Career Risk".to_string(),
-                    crate::rag::ObjectionCategory::TimingAndStalling => "Polite Avoidance / Procrastination".to_string(),
-                    crate::rag::ObjectionCategory::AuthorityAndCommitment => "Internal Political Vulnerability".to_string(),
-                    crate::rag::ObjectionCategory::CompetitorComparison => "Skepticism / Bargaining Anchor".to_string(),
-                    crate::rag::ObjectionCategory::StatusQuoInertia => "Complacency / Pain of Change Fear".to_string(),
-                    crate::rag::ObjectionCategory::TrustAndRiskAversion => "Fear of Personal Failure / Job Safety".to_string(),
-                    _ => "Cautious Exploration".to_string(),
-                },
+                state_of_being: battlecard.state_of_being.to_string(),
+                detected_emotion: format!("{:?}", battlecard.category),
                 unspoken_subtext: battlecard.customer_unspoken_thought.to_string(),
                 expected_next_say: battlecard.customer_next_trajectory.to_string(),
                 recommended_framework: battlecard.framework_name.to_string(),
@@ -144,19 +144,20 @@ impl JevEngine {
                 timestamp: now_str,
             }
         } else {
-            // General Discovery / Clarification fallback using Chris Voss Calibrated Questions
+            // General Diagnostic Fallback
             LiveSalesHint {
                 speaker: req.speaker.clone(),
                 utterance: query.to_string(),
-                detected_emotion: "Uncommitted Evaluation".to_string(),
-                unspoken_subtext: "I'm weighing whether this call is worth my team's time or if this is just another generic vendor pitch.".to_string(),
-                expected_next_say: "They will ask for a high-level overview or ask you to explain your core value proposition in 30 seconds.".to_string(),
+                state_of_being: "Uncommitted Evaluation & Guarded Curiosity".to_string(),
+                detected_emotion: "GENERAL_DISCOVERY".to_string(),
+                unspoken_subtext: "I'm listening, but if this sounds like a generic pitch I will find a polite excuse to hang up.".to_string(),
+                expected_next_say: "They are about to say: 'Can you just give me a quick high-level overview or ballpark price?'".to_string(),
                 recommended_framework: "Chris Voss Calibrated Open-Ended Question".to_string(),
                 book_source: "Chris Voss — 'Never Split the Difference'".to_string(),
-                psychological_principle: "Invites the prospect to define the problem so they become emotionally invested in solving it.".to_string(),
-                exact_script_to_say: "What's the biggest operational friction your team is running into right now that made you open to exploring this?".to_string(),
-                secondary_followup: "How is that challenge impacting your quarterly targets if things stay the way they are today?".to_string(),
-                delivery_tone: "Deep, curious, unhurried tone. Let them speak 80% of the time.".to_string(),
+                psychological_principle: "Disarms defensive sales resistance by putting the prospect in control of describing their challenge.".to_string(),
+                exact_script_to_say: "Before we get into specifics—what was the #1 challenge or goal that made you open to jumping on this call today?".to_string(),
+                secondary_followup: "How is that currently impacting your targets if things stay the way they are right now?".to_string(),
+                delivery_tone: "Deep, relaxed, curious FM DJ voice. Listen 80% of the time.".to_string(),
                 confidence_pct: 88.0,
                 telemetry,
                 timestamp: now_str,

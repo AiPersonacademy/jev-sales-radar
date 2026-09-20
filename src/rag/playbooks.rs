@@ -4,12 +4,14 @@ use serde::{Deserialize, Serialize};
 #[serde(rename_all = "SCREAMING_SNAKE_CASE")]
 pub enum ObjectionCategory {
     PriceAndBudget,
+    GuaranteesAndRisk,
+    ReviewsAndSocialProof,
     TimingAndStalling,
-    AuthorityAndCommitment,
+    AuthorityAndPartner,
+    TrustAndSkepticism,
+    StatusQuoAndDiy,
+    BandwidthAndTime,
     CompetitorComparison,
-    StatusQuoInertia,
-    TrustAndRiskAversion,
-    FeatureDeficit,
     GeneralDiscovery,
 }
 
@@ -18,6 +20,7 @@ pub struct Battlecard {
     pub id: &'static str,
     pub category: ObjectionCategory,
     pub trigger_patterns: &'static [&'static str],
+    pub state_of_being: &'static str,
     pub customer_unspoken_thought: &'static str,
     pub customer_next_trajectory: &'static str,
     pub framework_name: &'static str,
@@ -29,221 +32,319 @@ pub struct Battlecard {
 }
 
 pub static BATTLECARDS: &[Battlecard] = &[
-    // 1. PRICE SHOCK / BUDGET
+    // 1. PRICE TOO HIGH / AFFORDABILITY (General Sales Call)
     Battlecard {
-        id: "voss_price_shock",
+        id: "voss_price_too_high",
         category: ObjectionCategory::PriceAndBudget,
         trigger_patterns: &[
             "too expensive",
             "price is high",
+            "price is way too high",
             "over our budget",
             "can't afford",
+            "cannot afford",
             "cost too much",
             "sticker shock",
             "out of our price range",
+            "that's a lot of money",
+            "costs a lot",
         ],
-        customer_unspoken_thought: "I like this, but I'm terrified my CFO or finance team will chew me out for spending capital right now. I need an ironclad ROI shield.",
-        customer_next_trajectory: "They will demand a 30-50% blanket discount or defer the decision to next fiscal quarter.",
-        framework_name: "Tactical Empathy & Calibrated Labeling",
-        author_and_book: "Chris Voss — 'Never Split the Difference'",
-        psychological_principle: "Disarms defensive amygdala activation by vocalizing their unspoken fear before they defend it.",
-        exact_script: "It sounds like you're under immense pressure from finance to protect cash flow this quarter, and any new commitment feels like a career risk.",
-        secondary_followup: "How does this cost compare to the revenue your team is burning every month by running the current manual setup?",
-        tone_delivery_guide: "Late-night FM DJ voice: calm, slow, completely devoid of defensive or apologetic pitch.",
+        state_of_being: "Financial Self-Preservation & Fear of Buyer's Remorse",
+        customer_unspoken_thought: "I want the promised result, but I'm terrified of making an expensive mistake or overpaying. I need to be 100% sure this pays for itself before risking my capital.",
+        customer_next_trajectory: "They are about to say: 'Can you do it for less, or maybe we can start with something smaller?' or 'We'll have to wait until next quarter.'",
+        framework_name: "Tactical Empathy & Calibrated ROI Reframe",
+        author_and_book: "Chris Voss & Alex Hormozi — 'Never Split the Difference' & '$100M Offers'",
+        psychological_principle: "Disarms defensive amygdala activation by vocalizing their fear of waste, then transforms an 'expense' into an inevitable return.",
+        exact_script: "It feels like a big number right now because you're looking at this as a raw expense rather than an asset that pays for itself. If you knew with 100% certainty that this completely solved your problem, would the price still hold you back?",
+        secondary_followup: "What is it currently costing you every month in lost time and missed results by staying where you are right now?",
+        tone_delivery_guide: "Late-night FM DJ voice: calm, slow cadence, downward inflection at sentence end. Completely devoid of defensiveness.",
     },
 
-    // 2. DISCOUNT PRESSURE
+    // 2. GUARANTEES & REFUNDS (General Sales Call)
     Battlecard {
-        id: "voss_discount_pressure",
-        category: ObjectionCategory::PriceAndBudget,
+        id: "hormozi_guarantee_risk",
+        category: ObjectionCategory::GuaranteesAndRisk,
         trigger_patterns: &[
-            "can you give us a discount",
-            "any discount",
-            "what's your best price",
-            "lower the price",
-            "sharpen the pencil",
-            "give me a deal",
+            "what's the guarantee",
+            "what is the guarantee",
+            "is there a guarantee",
+            "money back guarantee",
+            "what if it doesn't work",
+            "what if it does not work",
+            "can i get a refund",
+            "refund policy",
+            "cancel anytime",
+            "what if i'm not satisfied",
+            "what if i am not satisfied",
         ],
-        customer_unspoken_thought: "I'm testing your posture to see if you have pricing integrity. If you fold instantly, I'll know you were overcharging me.",
-        customer_next_trajectory: "They will treat your price as a loose guideline and demand concession after concession without giving anything up.",
-        framework_name: "The Ackerman Model & Calibrated 'How' Question",
-        author_and_book: "Chris Voss — 'Never Split the Difference'",
-        psychological_principle: "Forces the buyer to solve your pricing problem instead of allowing them to pressure you into unilateral concessions.",
-        exact_script: "How am I supposed to do that without gutting the dedicated support tier and rollout engineers your team specifically asked for?",
-        secondary_followup: "We can adjust scope or payment terms, but if we drop the price arbitrarily, what deliverables are you comfortable cutting?",
-        tone_delivery_guide: "Gently curious, completely non-confrontational. Make them reflect on the tradeoff.",
+        state_of_being: "Paralyzed Buyer / Risk Aversion / Burned in the Past",
+        customer_unspoken_thought: "I've been burned by slick promises before. If this flops, I'm the fool holding the bag. I need the salesperson to shoulder the financial and performance risk, not me.",
+        customer_next_trajectory: "They are about to say: 'I need to see your contract and written refund policy before I even consider taking the next step.'",
+        framework_name: "Risk Reversal & Conditional Performance Guarantee",
+        author_and_book: "Alex Hormozi & Drew Eric Whitman — '$100M Offers' & 'CA$HVERTISING'",
+        psychological_principle: "Eliminates perceived decision hazard by transferring 100% of the operational risk from buyer to seller.",
+        exact_script: "You shouldn't have to carry the risk for our ability to deliver. We back this with an ironclad performance guarantee: if you follow the system and don't hit the agreed milestones, we work with you for free until you do, or refund every single dollar. Does that take the weight off your shoulders?",
+        secondary_followup: "If you have zero financial downside and only upside, what's really keeping you from getting started today?",
+        tone_delivery_guide: "Absolute conviction and grounded stability. Unshakable posture that radiates total certainty in the product.",
     },
 
-    // 3. COMPETITOR LOWER PRICE
+    // 3. REVIEWS, TESTIMONIALS & SOCIAL PROOF (General Sales Call)
     Battlecard {
-        id: "spin_competitor_cheaper",
-        category: ObjectionCategory::CompetitorComparison,
+        id: "cialdini_reviews_social_proof",
+        category: ObjectionCategory::ReviewsAndSocialProof,
         trigger_patterns: &[
-            "competitor is cheaper",
-            "other vendor is half the price",
-            "we got a quote from",
-            "cheaper alternative",
-            "why are you more expensive than",
+            "do you have reviews",
+            "show me reviews",
+            "show me testimonials",
+            "do you have testimonials",
+            "case studies",
+            "do you have case studies",
+            "who else has done this",
+            "who else uses this",
+            "proof",
+            "show me proof",
+            "any references",
+            "anyone in my situation",
         ],
-        customer_unspoken_thought: "I'm anchoring to the bottom-feeder in your space to squeeze you, even though I know their product is fragile or missing enterprise features.",
-        customer_next_trajectory: "They will use the competitor's feature checklist to make your pricing seem unjustified.",
-        framework_name: "Implication Questioning & Total Cost of Ownership",
-        author_and_book: "Neil Rackham — 'SPIN Selling'",
-        psychological_principle: "Shifts conversation from upfront purchase price to the catastrophic cost of secondary failures and downtime.",
-        exact_script: "When you look at their lower price, what specific architecture shortcuts or compliance compromises are they taking to hit that tier?",
-        secondary_followup: "If their system drops out during peak traffic or fails an audit, what does that 2-hour downtime cost your business?",
-        tone_delivery_guide: "Objective consultant posture. Never disparage the competitor; ask questions that expose their gaps.",
+        state_of_being: "Herd Safety Seeking & Social Validation Need",
+        customer_unspoken_thought: "I don't want to be the pioneer or the guinea pig. I need undeniable proof that regular people or companies in my exact shoes took this leap and won.",
+        customer_next_trajectory: "They are about to say: 'Can you send me a list of references or case studies with phone numbers that I can contact before deciding?'",
+        framework_name: "Third-Party Social Proof & Peer Mirror Story",
+        author_and_book: "Robert Cialdini & Oren Klaff — 'Influence' & 'Pitch Anything'",
+        psychological_principle: "Humans look to the actions of similar others to guide their own decisions when uncertain.",
+        exact_script: "I wouldn't expect you to take my word for it. In fact, one of our clients was in your exact situation two months ago—hesitant, wondering if this would actually work for them. Within 30 days of implementation, they completely turned their numbers around and doubled their output. Would you like me to show you their exact before-and-after breakdown?",
+        secondary_followup: "When you see the exact walkthrough of how they did it, what specific metric matters most to your situation?",
+        tone_delivery_guide: "Casual storytelling cadence. Warm, authentic, matter-of-fact—like sharing news with a respected colleague.",
     },
 
-    // 4. THE SEND ME AN EMAIL / STALL
+    // 4. TIMING & 'LET ME THINK ABOUT IT' (General Sales Call)
+    Battlecard {
+        id: "voss_think_about_it",
+        category: ObjectionCategory::TimingAndStalling,
+        trigger_patterns: &[
+            "let me think about it",
+            "need to think about it",
+            "need some time to think",
+            "give us some time",
+            "i'll sleep on it",
+            "circle back next week",
+            "circle back next month",
+            "revisit next quarter",
+            "not ready right now",
+            "call me back later",
+        ],
+        state_of_being: "Polite Avoidance / Fear of Confrontation / Hidden Objection",
+        customer_unspoken_thought: "There is an unspoken hesitation or fear I haven't articulated to you, so I'm using 'time' as an easy polite escape hatch so I can hang up and ghost.",
+        customer_next_trajectory: "They are about to say: 'Just email me the summary and I'll review it over the weekend and let you know.'",
+        framework_name: "The Micro-Commitment Isolation & Truth Probe",
+        author_and_book: "Chris Voss & Robert Cialdini — 'Never Split the Difference' & 'Influence'",
+        psychological_principle: "Isolates the hidden fear into the open by eliminating false variables and giving permission to speak truth.",
+        exact_script: "Usually when someone tells me they need to think about it, it really comes down to one of two things: either they don't believe the mechanism will actually work for them, or they're uncomfortable with the investment. Which one is it for you?",
+        secondary_followup: "What specific piece of clarity could we resolve right now so you don't have to carry this decision around on your mind all week?",
+        tone_delivery_guide: "Gentle, non-judgmental, spacious. Ask the question and stay completely silent for at least 3 seconds.",
+    },
+
+    // 5. SEND ME AN EMAIL / BRUSH OFF (General Sales Call)
     Battlecard {
         id: "klaff_send_email_brush",
         category: ObjectionCategory::TimingAndStalling,
         trigger_patterns: &[
             "send me an email",
-            "just email me the info",
+            "just email me",
+            "send me the info",
             "send me a deck",
-            "put it in writing",
-            "email me your pricing",
+            "send me a proposal",
+            "send me some information",
+            "send over a brochure",
+            "put it in an email",
         ],
-        customer_unspoken_thought: "I want to get off this call without saying 'no' directly. Once you email me, I can safely ignore your follow-ups forever.",
-        customer_next_trajectory: "They will ghost your follow-up emails and leave you stuck in the pipeline graveyard.",
-        framework_name: "Time Frame Control & Status Inversion",
-        author_and_book: "Oren Klaff — 'Pitch Anything'",
-        psychological_principle: "Refuses the subservient 'vendor' posture and forces an immediate qualification moment.",
-        exact_script: "I can definitely send a deck, but usually when people say 'send me an email,' it's a polite way of saying this isn't a priority right now. Is that what's happening?",
-        secondary_followup: "If it's not a fit, I'd rather give you your afternoon back right now than spam your inbox for three weeks.",
-        tone_delivery_guide: "Relaxed, detached, zero desperation. Willing to walk away.",
+        state_of_being: "Reflexive Brush-Off / Inbound Overload",
+        customer_unspoken_thought: "I'm busy and getting pitched all day. Sending me an email lets me file you in my mental spam folder without feeling guilty.",
+        customer_next_trajectory: "They are about to say: 'I'll look over whatever you send and reach back out if it fits.' (95% chance they never reply).",
+        framework_name: "The Frame-Flip & Reluctance Disarm",
+        author_and_book: "Oren Klaff & Jeb Blount — 'Pitch Anything' & 'Fanatical Prospecting'",
+        psychological_principle: "Interrupts the automatic consumer script by refusing the passive inbox brush-off with professional dignity.",
+        exact_script: "I can definitely send an email, but candidly, your inbox is probably overflowing and you'll never look at it. What is the single biggest question that, if answered right now, would tell you whether this is a fit or a waste of time?",
+        secondary_followup: "If what I send matches everything you're looking for, what would be the very next step on your end?",
+        tone_delivery_guide: "Firm, friendly prizing frame. You respect your time and their time equally.",
     },
 
-    // 5. I NEED TO TALK TO MY BOSS / CEO
+    // 6. AUTHORITY & PARTNER DODGE (General Sales Call)
     Battlecard {
-        id: "voss_authority_dodge",
-        category: ObjectionCategory::AuthorityAndCommitment,
+        id: "voss_partner_spouse_boss",
+        category: ObjectionCategory::AuthorityAndPartner,
         trigger_patterns: &[
+            "talk to my wife",
+            "talk to my husband",
+            "check with my partner",
+            "check with my business partner",
             "need to talk to my boss",
             "check with my team",
             "need executive approval",
+            "not my decision alone",
             "run this by the committee",
-            "speak with the ceo",
-            "not my sole decision",
         ],
-        customer_unspoken_thought: "I don't want to carry the political burden of pitching this internally unless you give me the exact ammunition to look like a hero.",
-        customer_next_trajectory: "They will pitch a weak, 2-minute half-baked summary to their boss, get shot down immediately, and tell you 'we decided to hold off.'",
-        framework_name: "Accusation Audit & Champion Arming",
+        state_of_being: "Diffused Responsibility / Fear of Internal Conflict",
+        customer_unspoken_thought: "I like this, but I don't want to carry the political burden or marital friction of making this decision alone. I'm using them as a shield.",
+        customer_next_trajectory: "They are about to say: 'If it were up to me I'd do it right now, but I have to see what they say first.' (They will pitch a weak 30-second summary and get shot down).",
+        framework_name: "The Champion Arming & Objection Pre-Mortem",
         author_and_book: "Chris Voss & Matthew Dixon — 'Never Split the Difference' & 'The Challenger Sale'",
-        psychological_principle: "Transforms the prospect from an insecure messenger into an empowered internal champion.",
-        exact_script: "When you present this to your executive team, what's the #1 objection they're going to hit you with to shut it down?",
-        secondary_followup: "Let's build the 1-page financial proof document together so you don't have to defend technical architecture alone in that meeting.",
-        tone_delivery_guide: "Partnership tone. Act as their internal strategist against their company's bureaucracy.",
+        psychological_principle: "Arms the prospect to defend the solution internally rather than letting them become a vulnerable messenger.",
+        exact_script: "Makes total sense—you definitely want them aligned on this. When you bring this to them tonight, what is the #1 concern or pushback they're going to hit you with?",
+        secondary_followup: "Would it make sense for us to hop on a quick 10-minute 3-way call together so you don't have to defend all the technical details by yourself?",
+        tone_delivery_guide: "Allied partnership tone. Position yourself as their internal strategist.",
     },
 
-    // 6. WE'RE HAPPY WITH WHAT WE HAVE / STATUS QUO
+    // 7. SKEPTICISM & 'TOO GOOD TO BE TRUE' (General Sales Call)
     Battlecard {
-        id: "challenger_status_quo",
-        category: ObjectionCategory::StatusQuoInertia,
+        id: "whitman_too_good_to_be_true",
+        category: ObjectionCategory::TrustAndSkepticism,
         trigger_patterns: &[
-            "happy with what we have",
-            "current solution is fine",
-            "we're good right now",
-            "already have a vendor",
-            "if it ain't broke",
-            "not looking to switch",
+            "too good to be true",
+            "sounds too good to be true",
+            "what's the catch",
+            "what is the catch",
+            "is this a scam",
+            "sounds like hype",
+            "why should i trust you",
+            "i'm skeptical",
+            "i am skeptical",
+            "hard to believe",
         ],
-        customer_unspoken_thought: "Switching tools is painful and requires retraining my team. The pain of changing exceeds the pain of my current minor annoyance.",
-        customer_next_trajectory: "They will politely end the conversation and maintain their suboptimal existing stack.",
-        framework_name: "Commercial Reframe & Constructive Tension",
-        author_and_book: "Matthew Dixon & Brent Adamson — 'The Challenger Sale'",
-        psychological_principle: "Introduces unconsidered needs and unseen operational debt to shatter false complacency.",
-        exact_script: "Most companies we talk to felt their setup was fine too—until they realized their competitors were closing cycles 3x faster using automated gating.",
-        secondary_followup: "What happens to your quarterly targets if your current stack continues leaking 15 hours a week in engineering waste?",
-        tone_delivery_guide: "Direct, provocative, authoritative. Bring fresh market insight.",
+        state_of_being: "Reptilian Defense / Hype Alarm Triggered",
+        customer_unspoken_thought: "Everyone in your industry overpromises and underdelivers. My BS detector is buzzing. Show me where the trap is.",
+        customer_next_trajectory: "They are about to say: 'There has to be hidden fees or catch you aren't telling me about.'",
+        framework_name: "The Damaging Admission & Radical Candor",
+        author_and_book: "Drew Eric Whitman & Oren Klaff — 'CA$HVERTISING' & 'Pitch Anything'",
+        psychological_principle: "Admitting a real flaw or requirement instantly authenticates all subsequent positive claims.",
+        exact_script: "You're completely right to be skeptical. If someone promised me these kinds of results without context, my guard would be up too. Here's the honest catch: this system does not work automatically. It requires consistent execution and disciplined implementation. If you're looking for push-button magic, we're the wrong fit. But if you execute the playbook, the math is undeniable.",
+        secondary_followup: "Given that reality, are you looking for an easy shortcut, or a proven infrastructure that actually compounds?",
+        tone_delivery_guide: "Disarming, grounded authenticity. Zero sales hype. Pure truth-telling posture.",
     },
 
-    // 7. WE ALREADY DO THIS IN SPREADSHEETS / IN-HOUSE
+    // 8. DO IT OURSELVES / IN-HOUSE DIY (General Sales Call)
     Battlecard {
-        id: "spin_inhouse_spreadsheets",
-        category: ObjectionCategory::StatusQuoInertia,
+        id: "rackham_spin_diy_inertia",
+        category: ObjectionCategory::StatusQuoAndDiy,
         trigger_patterns: &[
-            "we do this in spreadsheets",
+            "we can do this ourselves",
+            "can do this ourselves",
+            "figure it out myself",
+            "we can build this",
+            "already have an internal system",
             "built our own tool",
-            "internal system",
-            "we can build this ourselves",
-            "our engineers can do this",
-            "in-house solution",
+            "can find it on youtube",
+            "do it in house",
         ],
-        customer_unspoken_thought: "We pride ourselves on technical self-reliance, even though our internal scripts break every sprint and nobody maintains them.",
-        customer_next_trajectory: "They will sink 6 months of senior engineering payroll into building a brittle clone instead of focusing on core product.",
-        framework_name: "Problem-to-Implication Escalation",
+        state_of_being: "Overconfident DIY Bias / Hidden Cost Blindness",
+        customer_unspoken_thought: "I pride myself on self-reliance. I don't want to spend money on something I think I or my team can cobble together for free.",
+        customer_next_trajectory: "They are about to say: 'We'll try tackling it ourselves first, and if we hit a wall, we'll reach back out to you.' (They will lose 6 months of trial-and-error).",
+        framework_name: "Implication Escalation & Opportunity Cost Quantification",
         author_and_book: "Neil Rackham — 'SPIN Selling'",
-        psychological_principle: "Quantifies the real opportunity cost of distracting core developers from revenue-generating product features.",
-        exact_script: "Your engineers can definitely build this—but do you want your top developers debugging internal workflows or shipping your core product?",
-        secondary_followup: "When your internal tool breaks during a critical release cycle, who gets pulled off customer-facing bugs to fix it?",
-        tone_delivery_guide: "Respectful acknowledgment of their team's talent, followed by ruthless business prioritization.",
+        psychological_principle: "Exposes the catastrophic unseen cost of delay, distraction, and trial-and-error payroll.",
+        exact_script: "You definitely could build or figure this out yourselves—your team is talented. But what's the real cost of spending the next 6 to 9 months in trial-and-error while your core business waits? What revenue are you giving up while your focus is diverted?",
+        secondary_followup: "Would you rather spend the next half-year reinventing the wheel, or plug in a battle-tested solution on day one and focus entirely on growth?",
+        tone_delivery_guide: "Respectful deference to their talent, followed by rigorous business reality-check.",
     },
 
-    // 8. WE'RE GOING TO THINK ABOUT IT / DELAY
+    // 9. NO TIME / BANDWIDTH / OVERWHELMED (General Sales Call)
     Battlecard {
-        id: "cialdini_think_about_it",
-        category: ObjectionCategory::TimingAndStalling,
+        id: "voss_no_time_bandwidth",
+        category: ObjectionCategory::BandwidthAndTime,
         trigger_patterns: &[
-            "we need to think about it",
-            "give us some time",
-            "circle back in a month",
-            "revisit next quarter",
-            "need time to digest",
-        ],
-        customer_unspoken_thought: "I have an unspoken objection or fear I haven't articulated to you yet, so I'm using 'time' as an escape hatch.",
-        customer_next_trajectory: "Momentum dies. 70% of deals that enter 'think about it' purgatory never close.",
-        framework_name: "The Micro-Commitment & Isolation Technique",
-        author_and_book: "Robert Cialdini & Chris Voss — 'Influence' & 'Never Split the Difference'",
-        psychological_principle: "Forces the hidden obstacle into the open by removing all other variables.",
-        exact_script: "Usually when someone says they need to think about it, it comes down to one of two things: either they don't believe the system works, or the price doesn't make sense. Which one is it?",
-        secondary_followup: "What specific piece of information could we clarify right now so you don't have to carry this decision around all week?",
-        tone_delivery_guide: "Direct and unhurried. Hold eye contact or pause firmly after the question.",
-    },
-
-    // 9. NEVER HEARD OF YOU / TOO SMALL / CREDIBILITY RISK
-    Battlecard {
-        id: "whitman_credibility_risk",
-        category: ObjectionCategory::TrustAndRiskAversion,
-        trigger_patterns: &[
-            "never heard of your company",
-            "you seem small",
-            "how long have you been around",
-            "you're a startup",
-            "nobody ever got fired for buying ibm",
-            "what if you go out of business",
-        ],
-        customer_unspoken_thought: "I don't want to get fired if you guys flop. My personal career safety is more important than your cool technology.",
-        customer_next_trajectory: "They will default to an overpriced legacy incumbent solely because it protects their job.",
-        framework_name: "LF8 Ego & Social Proof Inversion",
-        author_and_book: "Drew Eric Whitman — 'CA$HVERTISING'",
-        psychological_principle: "Taps into Life-Force 8 desire for superiority and freedom from fear by framing incumbent tools as outdated career risk.",
-        exact_script: "The legacy giants were built 15 years ago before sub-25ms decisioning existed. Teams switch to us because the legacy tools are slowing them down.",
-        secondary_followup: "We run completely transparent on your infrastructure with zero lock-in and complete data isolation. Would you like to review our compliance architecture?",
-        tone_delivery_guide: "Confident pioneer posture. Frame agility and speed as the superior security choice.",
-    },
-
-    // 10. WE DON'T HAVE TIME TO IMPLEMENT
-    Battlecard {
-        id: "voss_no_time_implement",
-        category: ObjectionCategory::TimingAndStalling,
-        trigger_patterns: &[
-            "no time to implement",
+            "no time",
+            "don't have time",
+            "too busy",
+            "too busy right now",
             "team is overwhelmed",
             "bandwidth is tight",
-            "too busy right now",
-            "can't take on new projects",
+            "looks complicated",
+            "steep learning curve",
+            "too much on my plate",
         ],
-        customer_unspoken_thought: "I'm already working 50 hours a week. If this takes 20 hours to configure, I'll drown.",
-        customer_next_trajectory: "They will delay until 'things calm down' (which never happens in business).",
-        framework_name: "Radical Simplicity & Reversal of Burden",
+        state_of_being: "Cognitive Exhaustion & Friction Avoidance",
+        customer_unspoken_thought: "I'm already drowning in daily fire-fighting. If this takes 20 hours to set up or learn, I will collapse under the weight.",
+        customer_next_trajectory: "They are about to say: 'Let's reconnect in 3 to 6 months when things calm down.' (Which never happens).",
+        framework_name: "Radical Burden Reversal & Done-With-You Lift",
+        author_and_book: "Chris Voss & Alex Hormozi — 'Never Split the Difference' & '$100M Offers'",
+        psychological_principle: "Removes psychological friction by taking the heavy cognitive burden entirely off their shoulders.",
+        exact_script: "It sounds like you're completely underwater right now, and the last thing you need is another 30-day headache to manage. What if 90% of the heavy lifting is handled for you, so this actually frees up hours in your week instead of taking them?",
+        secondary_followup: "If you only had to invest 15 minutes to review the finished system, would that fit into your schedule this week?",
+        tone_delivery_guide: "Deep, empathetic relief. Speak as an unburdening ally, not an additional taskmaster.",
+    },
+
+    // 10. DISCOUNT BARGAINING / PRICE HAGGLING (General Sales Call)
+    Battlecard {
+        id: "voss_discount_bargaining",
+        category: ObjectionCategory::PriceAndBudget,
+        trigger_patterns: &[
+            "can you give us a discount",
+            "can you give me a discount",
+            "any discount",
+            "what's your best price",
+            "what is your best price",
+            "lower the price",
+            "sharpen your pencil",
+            "give me a deal",
+            "can you do better",
+        ],
+        state_of_being: "Opportunistic Negotiation / Testing Seller Posture",
+        customer_unspoken_thought: "I'm testing your spine. If you drop your price in 2 seconds without negotiation, I'll know your product was overpriced and you're desperate for the deal.",
+        customer_next_trajectory: "They are about to say: 'If you can knock 25% off right now, I'll pull out my credit card today.'",
+        framework_name: "The Ackerman Model & Calibrated Tradeoff",
         author_and_book: "Chris Voss — 'Never Split the Difference'",
-        psychological_principle: "Removes perceived effort hurdle by taking full operational responsibility onto your shoulders.",
-        exact_script: "It sounds like your plate is completely overflowing, and the last thing you need is another 30-day onboarding project.",
-        secondary_followup: "What if our engineers do the complete setup in under 48 hours, and your team only has to spend 15 minutes reviewing the final dashboard?",
-        tone_delivery_guide: "Empathetic relief. Act as an unburdening force in their hectic day.",
+        psychological_principle: "Preserves pricing integrity and forces the buyer to confront the real tradeoffs of cutting budget.",
+        exact_script: "We price based on guaranteeing the full result without cutting corners. How am I supposed to lower the investment without stripping out the exact support and execution your team asked for?",
+        secondary_followup: "If we adjust the scope to fit your budget, which specific deliverables are you comfortable removing from the plan?",
+        tone_delivery_guide: "Completely calm, unhurried, curious. Never defensive or panicked.",
+    },
+
+    // 11. COMPETITOR COMPARISON (General Sales Call)
+    Battlecard {
+        id: "rackham_competitor_comparison",
+        category: ObjectionCategory::CompetitorComparison,
+        trigger_patterns: &[
+            "competitor is cheaper",
+            "other company is cheaper",
+            "other vendor",
+            "we got a quote from",
+            "why are you more expensive than",
+            "cheaper alternative",
+            "looking at other options",
+        ],
+        state_of_being: "Bargaining Leverage Seeking / False Equivalence",
+        customer_unspoken_thought: "I'm comparing you to a cheaper, lower-quality option to see if I can force you to match their bottom-dollar rate.",
+        customer_next_trajectory: "They are about to say: 'Company X is offering basically the same thing for 40% less. Can you match them?'",
+        framework_name: "Value-to-Risk Reframe & Non-Parity Positioning",
+        author_and_book: "Neil Rackham & Matthew Dixon — 'SPIN Selling' & 'The Challenger Sale'",
+        psychological_principle: "Breaks commoditization by highlighting the hidden operational traps and secondary failures of budget alternatives.",
+        exact_script: "They're a well-known option for budget shoppers, but when you look closely, what corners are they cutting on execution or reliability to offer that price? What happens when their system fails right when you need it most?",
+        secondary_followup: "Do you want the cheapest initial receipt, or the highest return on investment with zero operational risk?",
+        tone_delivery_guide: "Objective advisor. Never badmouth competitors—let their structural limitations speak for themselves.",
+    },
+
+    // 12. GENERAL DISCOVERY / BROAD INQUIRY (General Sales Call)
+    Battlecard {
+        id: "voss_general_discovery",
+        category: ObjectionCategory::GeneralDiscovery,
+        trigger_patterns: &[
+            "how does this work",
+            "what do you guys do",
+            "what do you do",
+            "tell me more",
+            "give me the pitch",
+            "what is this about",
+            "explain your service",
+        ],
+        state_of_being: "Low Emotional Commitment / Diagnostic Phase",
+        customer_unspoken_thought: "I'll listen for 60 seconds, but if you launch into a boring generic monologue about your company, I'm going to tune out and look at my phone.",
+        customer_next_trajectory: "They are about to say: 'Okay, so what is your pricing?' to quickly dismiss you.",
+        framework_name: "The Calibrated Diagnostic Opener",
+        author_and_book: "Chris Voss — 'Never Split the Difference'",
+        psychological_principle: "Prevents premature pitching by getting the prospect talking about their specific pain in the first 30 seconds.",
+        exact_script: "Before I get into the mechanics of how we do it—what was the #1 frustration or goal that made you carve out time to jump on this call today?",
+        secondary_followup: "How long has that been an issue, and what have you tried so far to fix it?",
+        tone_delivery_guide: "Deeply curious, attentive, listening posture. Let them speak 80% of the conversation.",
     },
 ];
 
@@ -255,23 +356,19 @@ pub struct MatchResult {
 }
 
 impl Battlecard {
-    /// Blazing fast sub-millisecond in-memory matching algorithm
+    /// Sub-millisecond in-memory matching algorithm with zero-allocation fast-path
     pub fn find_best_match(query: &str) -> Option<MatchResult> {
         let q = query.to_lowercase();
-        let query_words: Vec<&str> = q.split(|c: char| !c.is_alphanumeric())
-            .filter(|w| !w.is_empty())
-            .collect();
 
         let mut best_card: Option<&'static Battlecard> = None;
         let mut best_score: f32 = 0.0;
         let mut best_pat: &'static str = "";
 
-        // Pass 1: Exact phrase match
+        // Pass 1: Direct phrase match (zero allocation, all trigger patterns are already lowercase)
         for card in BATTLECARDS {
             for &pat in card.trigger_patterns {
-                let pat_lower = pat.to_lowercase();
-                if q.contains(&pat_lower) {
-                    let score = 0.85 + (pat_lower.len() as f32 / (q.len().max(pat_lower.len()) as f32) * 0.15);
+                if q.contains(pat) {
+                    let score = 0.85 + (pat.len() as f32 / (q.len().max(pat.len()) as f32) * 0.15);
                     if score > best_score {
                         best_score = score.min(0.99);
                         best_card = Some(card);
@@ -289,11 +386,15 @@ impl Battlecard {
             });
         }
 
+        let query_words: Vec<&str> = q.split(|c: char| !c.is_alphanumeric())
+            .filter(|w| !w.is_empty())
+            .collect();
+
         // Pass 2: Per-pattern token coverage (e.g. 'price is way too high' matches 'price is high')
         for card in BATTLECARDS {
             for &pat in card.trigger_patterns {
                 let pat_words: Vec<&str> = pat.split_whitespace()
-                    .filter(|w| w.len() > 2 && !["the", "our", "and", "for", "with"].contains(w))
+                    .filter(|w| w.len() > 2 && !["the", "our", "and", "for", "with", "that", "this"].contains(w))
                     .collect();
 
                 if pat_words.is_empty() {
@@ -305,10 +406,28 @@ impl Battlecard {
                     .count();
 
                 let ratio = matches as f32 / pat_words.len() as f32;
-                if ratio >= 0.60 && ratio > best_score {
+                if ratio >= 0.50 && ratio > best_score {
                     best_score = 0.70 + (ratio * 0.25);
                     best_card = Some(card);
                     best_pat = pat;
+                }
+            }
+        }
+
+        // Pass 3: Core keyword stem trigger fallback
+        if best_card.is_none() {
+            for card in BATTLECARDS {
+                for &pat in card.trigger_patterns {
+                    for word in pat.split_whitespace() {
+                        if word.len() >= 4 && query_words.iter().any(|qw| qw == &word) {
+                            let score = 0.75;
+                            if score > best_score {
+                                best_score = score;
+                                best_card = Some(card);
+                                best_pat = pat;
+                            }
+                        }
+                    }
                 }
             }
         }
