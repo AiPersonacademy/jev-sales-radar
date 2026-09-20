@@ -258,17 +258,22 @@ impl Battlecard {
     /// Blazing fast sub-millisecond in-memory matching algorithm
     pub fn find_best_match(query: &str) -> Option<MatchResult> {
         let q = query.to_lowercase();
+        let query_words: Vec<&str> = q.split(|c: char| !c.is_alphanumeric())
+            .filter(|w| !w.is_empty())
+            .collect();
+
         let mut best_card: Option<&'static Battlecard> = None;
         let mut best_score: f32 = 0.0;
         let mut best_pat: &'static str = "";
 
+        // Pass 1: Exact phrase match
         for card in BATTLECARDS {
             for &pat in card.trigger_patterns {
                 let pat_lower = pat.to_lowercase();
                 if q.contains(&pat_lower) {
-                    let score = (pat_lower.len() as f32) / (q.len().max(pat_lower.len()) as f32) + 0.65;
+                    let score = 0.85 + (pat_lower.len() as f32 / (q.len().max(pat_lower.len()) as f32) * 0.15);
                     if score > best_score {
-                        best_score = score.min(1.0);
+                        best_score = score.min(0.99);
                         best_card = Some(card);
                         best_pat = pat;
                     }
@@ -276,33 +281,41 @@ impl Battlecard {
             }
         }
 
-        // Secondary semantic keyword fallback if no exact phrase matched
-        if best_card.is_none() {
-            for card in BATTLECARDS {
-                let mut token_hits = 0;
-                let mut total_tokens = 0;
-                for &pat in card.trigger_patterns {
-                    for word in pat.split_whitespace() {
-                        total_tokens += 1;
-                        if word.len() > 3 && q.contains(word) {
-                            token_hits += 1;
-                        }
-                    }
+        if best_card.is_some() {
+            return best_card.map(|b| MatchResult {
+                battlecard: b,
+                match_score: (best_score * 100.0).round(),
+                matched_pattern: best_pat,
+            });
+        }
+
+        // Pass 2: Per-pattern token coverage (e.g. 'price is way too high' matches 'price is high')
+        for card in BATTLECARDS {
+            for &pat in card.trigger_patterns {
+                let pat_words: Vec<&str> = pat.split_whitespace()
+                    .filter(|w| w.len() > 2 && !["the", "our", "and", "for", "with"].contains(w))
+                    .collect();
+
+                if pat_words.is_empty() {
+                    continue;
                 }
-                if total_tokens > 0 {
-                    let ratio = (token_hits as f32) / (total_tokens as f32);
-                    if ratio > 0.15 && ratio > best_score {
-                        best_score = (ratio + 0.35).min(0.92);
-                        best_card = Some(card);
-                        best_pat = card.trigger_patterns[0];
-                    }
+
+                let matches = pat_words.iter()
+                    .filter(|pw| query_words.iter().any(|qw| qw == *pw || qw.starts_with(*pw)))
+                    .count();
+
+                let ratio = matches as f32 / pat_words.len() as f32;
+                if ratio >= 0.60 && ratio > best_score {
+                    best_score = 0.70 + (ratio * 0.25);
+                    best_card = Some(card);
+                    best_pat = pat;
                 }
             }
         }
 
         best_card.map(|b| MatchResult {
             battlecard: b,
-            match_score: (best_score * 100.0).round(),
+            match_score: (best_score.min(0.98) * 100.0).round(),
             matched_pattern: best_pat,
         })
     }

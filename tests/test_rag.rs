@@ -10,6 +10,13 @@ fn test_price_objection_matches_chris_voss() {
 }
 
 #[test]
+fn test_price_variation_token_coverage() {
+    let result = Battlecard::find_best_match("Your price is way too high compared to our other quotes").unwrap();
+    assert_eq!(result.battlecard.category, ObjectionCategory::PriceAndBudget);
+    assert!(result.battlecard.author_and_book.contains("Chris Voss"));
+}
+
+#[test]
 fn test_send_email_matches_oren_klaff() {
     let result = Battlecard::find_best_match("Just send me an email with the pricing deck").unwrap();
     assert_eq!(result.battlecard.category, ObjectionCategory::TimingAndStalling);
